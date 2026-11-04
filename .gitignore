@@ -5,3 +5,7 @@ installer/staging/
 installer/output/
 # Local Claude Code instructions (not published)
 CLAUDE.md
+
+# Promo video project
+promo/node_modules/
+promo/out/
