@@ -6,6 +6,12 @@ transcribed text is pasted into the window you were working in (or copied to the
 
 *BlahBlah3000* is a talking machine from a retro-future that never quite happened: it listens to your blah blah and writes it down. (Formerly known as *Kecálek*, Czech for a chatterbox.)
 
+## Download
+
+Get the Windows installer (`BlahBlah3000-Setup-X.Y.Z.exe`) from the
+[latest release](https://github.com/francbohuslav/blah-blah-3000/releases/latest). It installs for the current user, no administrator
+rights needed. You also need the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0).
+
 ## Features
 
 - Resident tray application, optionally started with Windows (`--tray`).
