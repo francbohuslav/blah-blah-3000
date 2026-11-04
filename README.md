@@ -12,6 +12,8 @@ transcribed text is pasted into the window you were working in (or copied to the
 
 *BlahBlah3000* is a talking machine from a retro-future that never quite happened: it listens to your blah blah and writes it down.
 
+https://github.com/user-attachments/assets/89df2640-e51f-48c0-bcc4-c2196c75f689
+
 ![BlahBlah3000 dictation window](docs/screenshot.png)
 
 ## Download
