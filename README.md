@@ -1,5 +1,11 @@
 # BlahBlah3000
 
+[![Release](https://img.shields.io/github/v/release/francbohuslav/blah-blah-3000)](https://github.com/francbohuslav/blah-blah-3000/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/francbohuslav/blah-blah-3000/total)](https://github.com/francbohuslav/blah-blah-3000/releases)
+[![License: MIT](https://img.shields.io/github/license/francbohuslav/blah-blah-3000)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-blue)
+![.NET](https://img.shields.io/badge/.NET-10-512bd4)
+
 A small Windows tray application for dictation. Press a shortcut (or click the tray icon), speak, press Enter, and the
 transcribed text is pasted into the window you were working in (or copied to the clipboard). Speech recognition runs
 **locally** with [Whisper](https://github.com/openai/whisper) – no cloud service, no account, nothing leaves your computer.
