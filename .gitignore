@@ -1,0 +1,9 @@
+bin/
+obj/
+publish/
+# Local copy of the production .env
+.env.production
+installer/staging/
+installer/output/
+# Local Claude Code instructions (not published)
+CLAUDE.md
