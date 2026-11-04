@@ -59,7 +59,7 @@ internal sealed class Settings
     public int ApiPort { get; set; } = 8221;
 
     /// <summary>true = the API listens on all interfaces (including the LAN), false = localhost only.</summary>
-    public bool ApiListenAll { get; set; } = true;
+    public bool ApiListenAll { get; set; } = false;
 
     /// <summary>After how many minutes of inactivity the model is unloaded from memory; 0 = never.</summary>
     public int UnloadAfterMinutes { get; set; }

@@ -53,7 +53,7 @@ To publish a version: bump `<Version>` in `BlahBlah3000.csproj`, create a GitHub
 ## Installer
 
 `build-installer.cmd` publishes the app and builds a Windows installer with [Inno Setup 6](https://jrsoftware.org/isinfo.php)
-into `installeroutput`. The installer works without administrator rights (per-user install), offers a desktop shortcut,
+into `installer\output`. The installer works without administrator rights (per-user install), offers a desktop shortcut,
 checks for the .NET 10 Desktop Runtime and, on uninstall, can also remove the settings and the downloaded model.
 The version comes from `<Version>` in `BlahBlah3000.csproj`.
 
@@ -80,7 +80,7 @@ the shortcut, autostart, the REST API, the microphone and its sensitivity, the W
 
 ## REST API
 
-Enabled by default on port `8221` (configurable; it can listen on localhost only).
+Enabled by default on port `8221` (configurable). It listens on localhost only unless you turn on "Listen on the local network too" in the settings.
 
 - `GET /health` → `{ "ok": true, "model": "ggml-large-v3-turbo-q8_0.bin", "state": "Ready" }` (HTTP 503 while the model is not usable)
 - `POST /transcribe?prompt=&language=` with a raw PCM body (signed 16-bit little-endian, 16 kHz, mono, at most 2 minutes)
