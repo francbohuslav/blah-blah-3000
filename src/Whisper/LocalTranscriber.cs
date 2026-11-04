@@ -82,6 +82,8 @@ internal sealed class LocalTranscriber
                 StateChanged?.Invoke();
             });
             await ModelStore.DownloadAsync(progress, cts.Token);
+            // Leave the Downloading state, otherwise EnsureLoadedAsync below refuses to load and the UI stays stuck at 100 %.
+            SetState(TranscriberState.Idle);
         }
         catch (OperationCanceledException)
         {
