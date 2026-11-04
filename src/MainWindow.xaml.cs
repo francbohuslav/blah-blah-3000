@@ -7,6 +7,7 @@ using System.Windows.Media;
 using BlahBlah3000.Audio;
 using BlahBlah3000.Native;
 using BlahBlah3000.Rules;
+using BlahBlah3000.Update;
 using BlahBlah3000.Whisper;
 
 namespace BlahBlah3000;
@@ -34,6 +35,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         _previousWindow = previousWindow;
+        AppVersion.Text = $" {UpdateChecker.Current}";
         if (previousWindow == IntPtr.Zero) HintText.Text = Loc.T("Main.Hint.Clipboard");
         _rules = new RuleEngine(_settings);
         _debug = new DebugDump(_settings.DebugRecording);

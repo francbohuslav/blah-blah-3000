@@ -47,6 +47,9 @@
       </Grid.RowDefinitions>
       <DockPanel Grid.Row="0" Margin="0,0,0,8" Background="Transparent" Cursor="SizeAll" MouseLeftButtonDown="OnHeaderMouseDown"
                  ToolTip="{local:Loc Main.DragTip}">
+        <TextBlock FontSize="14" Margin="0,0,14,0" Foreground="#e8eaed">
+          <Run Text="BlahBlah3000" FontWeight="SemiBold" /><Run x:Name="AppVersion" Foreground="#9aa0a6" />
+        </TextBlock>
         <TextBlock x:Name="Status" Text="{local:Loc Main.OpeningMic}" Foreground="#9aa0a6" FontSize="14" />
         <TextBlock x:Name="WhisperInfo" Margin="14,0,0,0" FontSize="14" Foreground="#9aa0a6"
                    MouseLeftButtonDown="OnWhisperInfoClick" />
