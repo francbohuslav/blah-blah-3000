@@ -16,10 +16,11 @@ internal static class UpdateChecker
     /// <summary>GitHub repository as "owner/name". While it still starts with "OWNER/" the check is skipped.</summary>
     private const string Repository = "francbohuslav/blah-blah-3000";
 
-    private static readonly HttpClient Http = CreateClient();
-
     /// <summary>Version of the running application (major.minor.build).</summary>
     public static Version Current { get; } = Normalize(Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0));
+
+    // Declared after Current: static initializers run in textual order and CreateClient reads Current.
+    private static readonly HttpClient Http = CreateClient();
 
     private static bool IsConfigured => !Repository.StartsWith("OWNER/", StringComparison.Ordinal);
 
