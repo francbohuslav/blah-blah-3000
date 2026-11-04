@@ -4,7 +4,9 @@ A small Windows tray application for dictation. Press a shortcut (or click the t
 transcribed text is pasted into the window you were working in (or copied to the clipboard). Speech recognition runs
 **locally** with [Whisper](https://github.com/openai/whisper) – no cloud service, no account, nothing leaves your computer.
 
-*BlahBlah3000* is a talking machine from a retro-future that never quite happened: it listens to your blah blah and writes it down. (Formerly known as *Kecálek*, Czech for a chatterbox.)
+*BlahBlah3000* is a talking machine from a retro-future that never quite happened: it listens to your blah blah and writes it down.
+
+![BlahBlah3000 dictation window](docs/screenshot.png)
 
 ## Download
 
