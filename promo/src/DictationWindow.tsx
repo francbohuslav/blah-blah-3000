@@ -76,7 +76,7 @@ export const DictationWindow: React.FC<{ speaking: boolean; level: number }> = (
     >
       <div style={{ display: "flex", alignItems: "center", height: 34 }}>
         <span style={{ fontSize: 14, fontWeight: 600 }}>BlahBlah3000</span>
-        <span style={{ fontSize: 14, color: C.muted, whiteSpace: "pre" }}> 1.1.0</span>
+        <span style={{ fontSize: 14, color: C.muted, whiteSpace: "pre" }}> 1.2.0</span>
         <span style={{ fontSize: 14, color: statusColor, marginLeft: 16 }}>{status}</span>
         <span style={{ fontSize: 14, color: whisperColor, marginLeft: 14 }}>{whisper}</span>
         <div style={{ flex: 1 }} />

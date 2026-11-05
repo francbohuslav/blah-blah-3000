@@ -90,7 +90,7 @@ const Activation: React.FC = () => (
   </>
 );
 
-const PROVIDERS = ["OpenAI", "Groq", "Google Gemini", "xAI (Grok)", "OpenRouter", "Ollama (local)", "Other (own address)"];
+const PROVIDERS = ["OpenAI", "Groq", "Google Gemini", "xAI (Grok)", "OpenRouter", "Perplexity", "Ollama (local)", "Other (own address)"];
 
 const Llm: React.FC<{ f: number }> = ({ f }) => {
   const highlight = Math.floor(Math.max(0, f - 0.8) / 0.7) % PROVIDERS.length;

@@ -67,7 +67,7 @@ const AiWindow: React.FC<{ f: number; level: number }> = ({ f, level }) => {
     >
       <div style={{ display: "flex", alignItems: "center", height: 34 }}>
         <span style={{ fontSize: 14, fontWeight: 600 }}>BlahBlah3000</span>
-        <span style={{ fontSize: 14, color: C.muted, whiteSpace: "pre" }}> 1.1.0</span>
+        <span style={{ fontSize: 14, color: C.muted, whiteSpace: "pre" }}> 1.2.0</span>
         <span style={{ fontSize: 14, color: C.recording, marginLeft: 16 }}>● Recording</span>
         <span style={{ fontSize: 14, color: aiColor, marginLeft: 14 }}>{ai}</span>
         <div style={{ flex: 1 }} />

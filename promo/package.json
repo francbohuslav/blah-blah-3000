@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts PromoLong out/blahblah3000-tour.mp4",
+    "render": "remotion render src/index.ts PromoLong out/blahblah3000-tour.mp4 --audio-bitrate=128k",
     "still": "remotion still src/index.ts PromoLong"
   },
   "dependencies": {
