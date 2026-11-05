@@ -29,6 +29,7 @@ internal static partial class LlmClient
         new("gemini", "Google Gemini", "https://generativelanguage.googleapis.com/v1beta/openai", "gemini-2.5-flash"),
         new("xai", "xAI (Grok)", "https://api.x.ai/v1", "grok-3-mini"),
         new("openrouter", "OpenRouter", "https://openrouter.ai/api/v1", "openai/gpt-4o-mini"),
+        new("perplexity", "Perplexity", "https://api.perplexity.ai", "sonar"),
         new("ollama", "Ollama (local)", "http://localhost:11434/v1", "llama3.2"),
         new("custom", "", "", ""),
     ];
