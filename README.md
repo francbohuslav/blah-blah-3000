@@ -12,7 +12,7 @@ transcribed text is pasted into the window you were working in (or copied to the
 
 *BlahBlah3000* is a talking machine from a retro-future that never quite happened: it listens to your blah blah and writes it down.
 
-https://github.com/user-attachments/assets/528f03be-0424-4e83-8a71-72e19865091d
+https://github.com/user-attachments/assets/71e9e35c-5c76-4e7b-8d46-e62809b53de9
 
 ![BlahBlah3000 dictation window](docs/screenshot.png)
 
