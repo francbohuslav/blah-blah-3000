@@ -82,6 +82,8 @@ internal static class Strings
         ["Set.Ptt.Enable"] = ("Hold the keys below and speak: each sentence is typed into the active window at the cursor",
             "Drž klávesy níže a mluv: každá věta se napíše do aktivního okna na pozici kurzoru"),
         ["Set.Ptt.Keys.CtrlShift"] = ("Ctrl + Shift", "Ctrl + Shift"),
+        ["Set.Ptt.Latch"] = ("Latch: after the delay the keys can be released; recording stops when you press them again",
+            "Přepínání: po uplynutí doby můžeš klávesy pustit; nahrávání skončí, až je stiskneš znovu"),
         ["Set.Ptt.Keys.LeftCtrl"] = ("Left Ctrl", "Levý Ctrl"),
         ["Set.Ptt.Keys.LeftShift"] = ("Left Shift", "Levý Shift"),
         ["Set.Ptt.Delay"] = ("Hold the keys for: {0:F0} ms before recording starts", "Podržet klávesy: {0:F0} ms, než se začne nahrávat"),

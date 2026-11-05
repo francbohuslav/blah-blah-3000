@@ -190,7 +190,7 @@ public partial class App : Application
         if (_pushToTalkHook != null)
         {
             if (!Settings.PushToTalkEnabled) _pushToTalkHook.Disable();
-            else if (!_pushToTalkHook.Enable(Settings.PushToTalkKeys, TimeSpan.FromMilliseconds(Settings.PushToTalkDelayMs)))
+            else if (!_pushToTalkHook.Enable(Settings.PushToTalkKeys, TimeSpan.FromMilliseconds(Settings.PushToTalkDelayMs), Settings.PushToTalkLatch))
             {
                 Log.Write($"Cannot enable push to talk ({Settings.PushToTalkKeys})");
                 _tray?.Notify(Loc.T("Tray.PttHookFailed"), warning: true);

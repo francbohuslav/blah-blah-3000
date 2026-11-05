@@ -49,6 +49,7 @@ public partial class SettingsWindow : Window
         RulesGrid.ItemsSource = _rules;
         ThresholdSlider.Value = settings.SilenceThreshold;
         PauseSlider.Value = settings.PauseMs;
+        PttLatchCheck.IsChecked = settings.PushToTalkLatch;
         PttDelaySlider.Value = Math.Clamp(settings.PushToTalkDelayMs, PttDelaySlider.Minimum, PttDelaySlider.Maximum);
         UpdateLabels();
 
@@ -161,6 +162,7 @@ public partial class SettingsWindow : Window
         _settings.PushToTalkEnabled = PttCheck.IsChecked == true;
         _settings.PushToTalkKeys = PttKeysCombo.SelectedValue as string ?? "Ctrl+Shift";
         _settings.PushToTalkDelayMs = (int)PttDelaySlider.Value;
+        _settings.PushToTalkLatch = PttLatchCheck.IsChecked == true;
         _settings.Autostart = AutostartCheck.IsChecked == true;
         _settings.CheckForUpdates = UpdatesCheck.IsChecked == true;
         _settings.ApiEnabled = ApiCheck.IsChecked == true;

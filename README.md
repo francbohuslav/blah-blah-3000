@@ -31,7 +31,8 @@ rights needed. You also need the [.NET 10 Desktop Runtime](https://dotnet.micros
   Opening dictation from the tray icon copies the result to the clipboard instead.
 - Optional push to talk (off by default, enable it in the settings): hold `Ctrl+Shift` (or Left/Right Ctrl, Left/Right Shift alone) for a configurable time and speak;
   every sentence is typed into the active window at the cursor, without opening the dictation window. The tray icon turns red
-  while recording. The text is typed as keyboard input, so it does not reach windows running as administrator, and the global
+  while recording. Optionally the keys can be let go after the delay, and a second press stops the recording (latch mode).
+  The text is typed as keyboard input, so it does not reach windows running as administrator, and the global
   keyboard hook it needs may be flagged by some antivirus products.
 - Sentences are transcribed as you pause, so you see the text while you speak; you can edit it before pressing Enter.
 - A free-text hint (terms, names, a style sample) that is passed to Whisper before every transcription.

@@ -59,6 +59,9 @@ internal sealed class Settings
     /// <summary>How long (ms) the push-to-talk keys must be held before recording starts; a longer delay leaves room for ordinary shortcuts.</summary>
     public int PushToTalkDelayMs { get; set; } = 300;
 
+    /// <summary>true = after the hold delay the push-to-talk keys can be released; the next press of them stops the recording.</summary>
+    public bool PushToTalkLatch { get; set; }
+
     /// <summary>Start with Windows (HKCU\...\Run entry, started with --tray).</summary>
     public bool Autostart { get; set; }
 

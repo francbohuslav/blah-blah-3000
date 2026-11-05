@@ -56,11 +56,15 @@ internal sealed class KeyboardHook : IDisposable
     private int[][] _groups = [];
     private bool _cancelled;
     private bool _engaged;
+    private bool _latched;
+
+    /// <summary>See the <c>latch</c> parameter of <see cref="Enable"/>.</summary>
+    public bool Latch { get; private set; }
 
     /// <summary>The combination has been held for the hold delay without any other key.</summary>
     public event Action? Engaged;
 
-    /// <summary>An engaged combination ended: a modifier was released or another key was pressed.</summary>
+    /// <summary>An engaged combination ended: a modifier was released (or, when latched, the keys were pressed again) or another key was pressed.</summary>
     public event Action? Released;
 
     public KeyboardHook()
@@ -97,11 +101,13 @@ internal sealed class KeyboardHook : IDisposable
     }
 
     /// <summary>Starts listening for the combination (replacing any previous one). Returns false when it is invalid or the hook cannot be installed.</summary>
-    public bool Enable(string combination, TimeSpan holdDelay)
+    /// <param name="latch">true = after the hold delay the keys may be released and the recording goes on until they are pressed again</param>
+    public bool Enable(string combination, TimeSpan holdDelay, bool latch)
     {
         Disable();
         if (!TryParse(combination, out _groups)) return false;
         _holdTimer.Interval = holdDelay;
+        Latch = latch;
         _hook = SetWindowsHookEx(WhKeyboardLl, _proc, GetModuleHandle(null), 0);
         if (_hook == IntPtr.Zero)
         {
@@ -118,9 +124,10 @@ internal sealed class KeyboardHook : IDisposable
         _holdTimer.Stop();
         _held.Clear();
         _cancelled = false;
-        if (_engaged)
+        if (_engaged || _latched)
         {
             _engaged = false;
+            _latched = false;
             Released?.Invoke();
         }
     }
@@ -154,6 +161,17 @@ internal sealed class KeyboardHook : IDisposable
         if (IsTracked(vk))
         {
             _held.Add(vk);
+            if (_latched)
+            {
+                // Pressing the keys again stops a latched push to talk. They are not hidden, so e.g. Ctrl+C still works as a shortcut.
+                if (AllHeld())
+                {
+                    _latched = false;
+                    _cancelled = true;
+                    Released?.Invoke();
+                }
+                return;
+            }
             if (!_cancelled && !_engaged && AllHeld() && !_holdTimer.IsEnabled) _holdTimer.Start();
             return;
         }
@@ -172,7 +190,13 @@ internal sealed class KeyboardHook : IDisposable
         if (!AllHeld())
         {
             _holdTimer.Stop();
-            EndEngaged();
+            if (_engaged && Latch)
+            {
+                // The keys may be let go; the recording goes on until they are pressed again.
+                _engaged = false;
+                _latched = true;
+            }
+            else EndEngaged();
         }
         if (_held.Count == 0) _cancelled = false;
     }
