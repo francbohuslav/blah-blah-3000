@@ -124,6 +124,8 @@ public partial class SettingsWindow : Window
     private void OnSave(object sender, RoutedEventArgs e)
     {
         AdvancedResult.Text = "";
+        ActivationResult.Text = "";
+        ReplacementsResult.Text = "";
         if (!int.TryParse(PortBox.Text.Trim(), out var port) || port is < 1 or > 65535)
         {
             // The port lives on the Advanced tab, so the message is shown there and the tab is brought forward.
@@ -136,14 +138,17 @@ public partial class SettingsWindow : Window
         {
             TestResult.Foreground = Brushes.Firebrick;
             TestResult.Text = Loc.T("Set.UnloadInvalid");
+            SettingsTabs.SelectedIndex = 0;
             return;
         }
 
         if (HotkeyBox.Text.Length > 0 && !string.Equals(HotkeyBox.Text, _settings.Hotkey, StringComparison.OrdinalIgnoreCase)
             && !App.IsHotkeyAvailable(HotkeyBox.Text))
         {
-            TestResult.Foreground = Brushes.Firebrick;
-            TestResult.Text = Loc.T("Set.HotkeyTaken", HotkeyBox.Text);
+            // The shortcut lives on the Activation tab, so the message is shown there and the tab is brought forward.
+            ActivationResult.Foreground = Brushes.Firebrick;
+            ActivationResult.Text = Loc.T("Set.HotkeyTaken", HotkeyBox.Text);
+            SettingsTabs.SelectedItem = ActivationTab;
             return;
         }
 
@@ -152,8 +157,10 @@ public partial class SettingsWindow : Window
         var badRule = _rules.FirstOrDefault(r => r.IsRegex && r.Pattern.Length > 0 && Rules.RuleEngine.TryCreateRegex(r.Pattern) == null);
         if (badRule != null)
         {
-            TestResult.Foreground = Brushes.Firebrick;
-            TestResult.Text = Loc.T("Set.RegexInvalid", badRule.Pattern);
+            // The table lives on the Replacements tab, so the message is shown there and the tab is brought forward.
+            ReplacementsResult.Foreground = Brushes.Firebrick;
+            ReplacementsResult.Text = Loc.T("Set.RegexInvalid", badRule.Pattern);
+            SettingsTabs.SelectedItem = ReplacementsTab;
             return;
         }
 

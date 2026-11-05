@@ -64,6 +64,7 @@ internal static class Strings
         ["Set.Tab.Hint"] = ("Hint", "Nápověda"),
         ["Set.Tab.Replacements"] = ("Replacements", "Náhrady"),
         ["Set.Tab.Recording"] = ("Recording", "Nahrávání"),
+        ["Set.Tab.Activation"] = ("Activation", "Aktivace"),
         ["Set.Tab.Advanced"] = ("Advanced", "Pokročilé"),
         ["Set.Debug.Title"] = ("Debugging", "Ladění"),
         ["Set.UiLanguage"] = ("Interface language", "Jazyk rozhraní"),

@@ -23,23 +23,6 @@
           <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Language.Hint}" />
           <TextBlock x:Name="TestResult" Margin="0,8,0,0" TextWrapping="Wrap" />
 
-          <TextBlock Text="{local:Loc Set.Hotkey}" FontWeight="SemiBold" Margin="0,16,0,0" />
-          <DockPanel Margin="0,6,0,0">
-            <Button Content="{local:Loc Set.Clear}" DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,3" Click="OnClearHotkey" />
-            <TextBox x:Name="HotkeyBox" IsReadOnly="True" VerticalContentAlignment="Center" PreviewKeyDown="OnHotkeyKeyDown"
-                     ToolTip="{local:Loc Set.Hotkey.Tip}" />
-          </DockPanel>
-          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Hotkey.Hint}" />
-
-          <TextBlock Text="{local:Loc Set.Ptt}" FontWeight="SemiBold" Margin="0,16,0,0" />
-          <CheckBox x:Name="PttCheck" Margin="0,6,0,0" Content="{local:Loc Set.Ptt.Enable}" />
-          <ComboBox x:Name="PttKeysCombo" Margin="0,6,0,0" DisplayMemberPath="Label" SelectedValuePath="Code" />
-          <TextBlock x:Name="PttDelayLabel" Margin="0,10,0,0" />
-          <Slider x:Name="PttDelaySlider" Minimum="100" Maximum="1500" TickFrequency="50" IsSnapToTickEnabled="True"
-                  Margin="0,2,0,0" ValueChanged="OnSliderChanged" />
-          <CheckBox x:Name="PttLatchCheck" Margin="0,10,0,0" Content="{local:Loc Set.Ptt.Latch}" />
-          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Ptt.Hint}" />
-
           <CheckBox x:Name="AutostartCheck" Margin="0,16,0,0" Content="{local:Loc Set.Autostart}" />
           <CheckBox x:Name="UpdatesCheck" Margin="0,6,0,0" Content="{local:Loc Set.CheckUpdates}" />
 
@@ -48,6 +31,30 @@
             <TextBox x:Name="UnloadBox" Width="50" Margin="8,0,0,0" VerticalContentAlignment="Center" />
             <TextBlock Text="{local:Loc Set.Unload.After}" Margin="8,0,0,0" VerticalAlignment="Center" />
           </StackPanel>
+        </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem x:Name="ActivationTab" Header="{local:Loc Set.Tab.Activation}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="14">
+          <TextBlock Text="{local:Loc Set.Hotkey}" FontWeight="SemiBold" />
+          <DockPanel Margin="0,6,0,0">
+            <Button Content="{local:Loc Set.Clear}" DockPanel.Dock="Right" Margin="8,0,0,0" Padding="10,3" Click="OnClearHotkey" />
+            <TextBox x:Name="HotkeyBox" IsReadOnly="True" VerticalContentAlignment="Center" PreviewKeyDown="OnHotkeyKeyDown"
+                     ToolTip="{local:Loc Set.Hotkey.Tip}" />
+          </DockPanel>
+          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Hotkey.Hint}" />
+          <TextBlock x:Name="ActivationResult" Margin="0,8,0,0" TextWrapping="Wrap" />
+
+          <TextBlock Text="{local:Loc Set.Ptt}" FontWeight="SemiBold" Margin="0,22,0,0" />
+          <CheckBox x:Name="PttCheck" Margin="0,6,0,0" Content="{local:Loc Set.Ptt.Enable}" />
+          <ComboBox x:Name="PttKeysCombo" Margin="0,6,0,0" DisplayMemberPath="Label" SelectedValuePath="Code" />
+          <TextBlock x:Name="PttDelayLabel" Margin="0,10,0,0" />
+          <Slider x:Name="PttDelaySlider" Minimum="100" Maximum="1500" TickFrequency="50" IsSnapToTickEnabled="True"
+                  Margin="0,2,0,0" ValueChanged="OnSliderChanged" />
+          <CheckBox x:Name="PttLatchCheck" Margin="0,10,0,0" Content="{local:Loc Set.Ptt.Latch}" />
+          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Ptt.Hint}" />
         </StackPanel>
         </ScrollViewer>
       </TabItem>
@@ -81,11 +88,12 @@
         </Grid>
       </TabItem>
 
-      <TabItem Header="{local:Loc Set.Tab.Replacements}">
+      <TabItem x:Name="ReplacementsTab" Header="{local:Loc Set.Tab.Replacements}">
         <Grid Margin="14">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
           <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,8" Text="{local:Loc Set.Rep.Intro}" />
           <DataGrid x:Name="RulesGrid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="True"
@@ -96,6 +104,7 @@
               <DataGridCheckBoxColumn Header="{local:Loc Set.Rep.Regex}" Binding="{Binding IsRegex, UpdateSourceTrigger=PropertyChanged}" Width="Auto" />
             </DataGrid.Columns>
           </DataGrid>
+          <TextBlock x:Name="ReplacementsResult" Grid.Row="2" Margin="0,8,0,0" TextWrapping="Wrap" />
         </Grid>
       </TabItem>
 
