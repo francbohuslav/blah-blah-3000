@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BlahBlah3000.Llm;
 using BlahBlah3000.Whisper;
 
 namespace BlahBlah3000;
@@ -10,6 +11,7 @@ namespace BlahBlah3000;
 public partial class SettingsWindow : Window
 {
     private readonly Settings _settings;
+    private readonly bool _initializing = true;
     private readonly Audio.MicRecorder _recorder = new();
     private readonly ObservableCollection<ReplacementRule> _rules;
 
@@ -55,6 +57,18 @@ public partial class SettingsWindow : Window
         PttAutoStopSlider.Value = Math.Clamp(settings.PushToTalkAutoStopSeconds, PttAutoStopSlider.Minimum, PttAutoStopSlider.Maximum);
         PttDelaySlider.Value = Math.Clamp(settings.PushToTalkDelayMs, PttDelaySlider.Minimum, PttDelaySlider.Maximum);
         UpdateLabels();
+
+        LlmCheck.IsChecked = settings.LlmEnabled;
+        var presets = LlmClient.Presets.Select(p => p.Id == "custom" ? p with { Label = Loc.T("Set.Llm.Provider.Custom") } : p).ToList();
+        LlmProviderCombo.ItemsSource = presets;
+        LlmProviderCombo.SelectedItem = presets.FirstOrDefault(p => p.Url.Length > 0
+            && string.Equals(p.Url, settings.LlmBaseUrl.Trim().TrimEnd('/'), StringComparison.OrdinalIgnoreCase)) ?? presets[^1];
+        LlmUrlBox.Text = settings.LlmBaseUrl;
+        LlmModelBox.Text = settings.LlmModel;
+        LlmKeyBox.Password = settings.LlmApiKey;
+        LlmPromptBox.Text = LlmClient.EffectivePrompt(settings);
+        LlmAutoCheck.IsChecked = settings.LlmAutoFix;
+        _initializing = false;
 
         _recorder.Data += OnMicData;
         var options = Audio.MicRecorder.ListOptions();
@@ -127,6 +141,44 @@ public partial class SettingsWindow : Window
 
     private void OnClearHotkey(object sender, RoutedEventArgs e) => HotkeyBox.Text = "";
 
+    /// <summary>Choosing a service fills in its address and a model; "other" leaves the fields as they are.</summary>
+    private void OnLlmProviderChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_initializing || LlmProviderCombo.SelectedItem is not LlmPreset { Id: not "custom" } preset) return;
+        LlmUrlBox.Text = preset.Url;
+        LlmModelBox.Text = preset.Model;
+    }
+
+    private void OnLlmPromptReset(object sender, RoutedEventArgs e) => LlmPromptBox.Text = LlmClient.DefaultPrompt;
+
+    /// <summary>Sends a short sample with the values from the form (not yet saved) and shows the result or the error.</summary>
+    private async void OnLlmTest(object sender, RoutedEventArgs e)
+    {
+        LlmTestButton.IsEnabled = false;
+        LlmResult.Foreground = Brushes.Gray;
+        LlmResult.Text = Loc.T("Llm.Testing");
+        try
+        {
+            var started = System.Diagnostics.Stopwatch.StartNew();
+            var reply = await LlmClient.CompleteAsync(LlmUrlBox.Text, LlmKeyBox.Password, LlmModelBox.Text.Trim(),
+                LlmClient.IsDefaultPrompt(LlmPromptBox.Text) ? LlmClient.DefaultPrompt : LlmPromptBox.Text.Trim(),
+                Loc.T("Llm.TestSample"), CancellationToken.None);
+            LlmResult.Foreground = Brushes.SeaGreen;
+            LlmResult.Text = Loc.T("Llm.TestOk", started.Elapsed.TotalSeconds, reply);
+        }
+        catch (LlmException ex)
+        {
+            LlmResult.Foreground = Brushes.Firebrick;
+            LlmResult.Text = "✗ " + ex.Message + "\n" + Loc.T("Llm.SeeLog", Log.FilePath);
+        }
+        finally
+        {
+            LlmTestButton.IsEnabled = true;
+        }
+    }
+
+    private static string HostOf(string url) => Uri.TryCreate(url.Trim(), UriKind.Absolute, out var uri) ? uri.Host : "";
+
     private void OnSave(object sender, RoutedEventArgs e)
     {
         AdvancedResult.Text = "";
@@ -170,6 +222,31 @@ public partial class SettingsWindow : Window
             return;
         }
 
+        var llmEnabled = LlmCheck.IsChecked == true;
+        if (llmEnabled && !LlmClient.IsValidUrl(LlmUrlBox.Text))
+        {
+            LlmResult.Foreground = Brushes.Firebrick;
+            LlmResult.Text = Loc.T("Set.Llm.UrlInvalid");
+            SettingsTabs.SelectedItem = LlmTab;
+            return;
+        }
+        // The text leaves the computer only after the user has agreed: when the correction is turned on or sent to another host.
+        if (llmEnabled && !LlmClient.IsLocal(LlmUrlBox.Text)
+            && (!_settings.LlmEnabled || !string.Equals(HostOf(LlmUrlBox.Text), HostOf(_settings.LlmBaseUrl), StringComparison.OrdinalIgnoreCase))
+            && MessageBox.Show(this, Loc.T("Llm.Consent", HostOf(LlmUrlBox.Text)), Loc.T("Llm.ConsentTitle"),
+                MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK)
+        {
+            SettingsTabs.SelectedItem = LlmTab;
+            return;
+        }
+
+        _settings.LlmEnabled = llmEnabled;
+        _settings.LlmBaseUrl = LlmUrlBox.Text.Trim();
+        _settings.LlmModel = LlmModelBox.Text.Trim();
+        _settings.LlmApiKey = LlmKeyBox.Password;
+        _settings.LlmAutoFix = LlmAutoCheck.IsChecked == true;
+        // The built-in text is not stored: it keeps following the interface language until the user changes it.
+        _settings.LlmPrompt = LlmClient.IsDefaultPrompt(LlmPromptBox.Text) ? "" : LlmPromptBox.Text.Trim();
         _settings.Microphone = (MicCombo.SelectedItem as Audio.MicOption)?.Name;
         _settings.Hotkey = HotkeyBox.Text;
         _settings.PushToTalkEnabled = PttCheck.IsChecked == true;

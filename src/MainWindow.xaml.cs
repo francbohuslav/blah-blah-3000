@@ -30,13 +30,19 @@ public partial class MainWindow : Window
     private bool _errorIsMic;
     private int _pending;
     private bool _whisperUsed;
+    private bool _paused;
+    private bool _fixing;
+    private CancellationTokenSource? _fixCts;
+    private string? _original;
+    // The text for which Enter pastes instead of correcting again (the corrected text, the original after "back", or text whose correction failed).
+    private string _lastFixedText = "";
 
     internal MainWindow(IntPtr previousWindow)
     {
         InitializeComponent();
         _previousWindow = previousWindow;
         AppVersion.Text = $" {UpdateChecker.Current}";
-        if (previousWindow == IntPtr.Zero) HintText.Text = Loc.T("Main.Hint.Clipboard");
+        ApplyLlmSettings();
         _rules = new RuleEngine(_settings);
         _debug = new DebugDump(_settings.DebugRecording);
         _segmenter.RmsThreshold = _settings.SilenceThreshold;
@@ -150,6 +156,7 @@ public partial class MainWindow : Window
                 _segmenter.Flush();
                 StartRecording();
             }
+            ApplyLlmSettings();
             _segmenter.RmsThreshold = _settings.SilenceThreshold;
             _segmenter.PauseMs = _settings.PauseMs;
             Log.Write($"Settings saved (threshold {_settings.SilenceThreshold:F0}, pause {_settings.PauseMs} ms, " +
@@ -200,7 +207,8 @@ public partial class MainWindow : Window
                 Status.Foreground = new SolidColorBrush(Color.FromRgb(0xf2, 0x8b, 0x82));
             }
         }
-        if (_finishing) return;
+        // While the AI corrects the text, nothing new is dictated: it could not be merged with the corrected text.
+        if (_finishing || _paused) return;
         _debug.AddChunk(chunk);
         _segmenter.Feed(chunk);
     }
@@ -343,7 +351,14 @@ public partial class MainWindow : Window
         if (e.Key == Key.Escape)
         {
             e.Handled = true;
-            Cancel();
+            // While the AI is working, Esc only cancels the correction.
+            if (_fixing) _fixCts?.Cancel();
+            else Cancel();
+        }
+        else if (e.Key == Key.K && Keyboard.Modifiers == ModifierKeys.Control && _settings.LlmEnabled)
+        {
+            e.Handled = true;
+            await FixTextAsync();
         }
         else if (e.Key == Key.Enter && Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
         {
@@ -356,8 +371,105 @@ public partial class MainWindow : Window
         else if (e.Key == Key.Enter && !_finishing)
         {
             e.Handled = true;
+            if (_fixing) return;
+            // With automatic correction the first Enter corrects and shows the result; the next one pastes it.
+            if (_settings.LlmEnabled && _settings.LlmAutoFix && TranscriptText().Length > 0 && TranscriptText() != _lastFixedText)
+            {
+                await FixTextAsync();
+                return;
+            }
             await FinishAsync();
         }
+    }
+
+    private string TranscriptText() => new TextRange(Transcript.Document.ContentStart, Transcript.Document.ContentEnd).Text.Trim();
+
+    private void SetTranscriptText(string text)
+    {
+        new TextRange(Transcript.Document.ContentStart, Transcript.Document.ContentEnd).Text = text;
+        Transcript.CaretPosition = Transcript.Document.ContentEnd;
+    }
+
+    /// <summary>The correction button and its hint depend on the settings, which can change while the window is open.</summary>
+    private void ApplyLlmSettings()
+    {
+        var on = _settings.LlmEnabled;
+        FixButton.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+        if (!on) RevertButton.Visibility = Visibility.Collapsed;
+        var clipboard = _previousWindow == IntPtr.Zero;
+        HintText.Text = Loc.T(on && _settings.LlmAutoFix
+            ? (clipboard ? "Main.Hint.ClipboardFix" : "Main.Hint.PasteFix")
+            : (clipboard ? "Main.Hint.Clipboard" : "Main.Hint.Paste"));
+    }
+
+    private void OnFixClick(object sender, RoutedEventArgs e) => _ = FixTextAsync();
+
+    /// <summary>
+    /// Sends the whole text to the AI and shows the corrected text in the window, where it can be checked and edited; the original is kept
+    /// so the user can go back. Recording is paused meanwhile, and Esc cancels.
+    /// </summary>
+    private async Task FixTextAsync()
+    {
+        if (_fixing || _finishing || !_settings.LlmEnabled) return;
+        _fixing = true;
+        FixButton.IsEnabled = false;
+        _fixCts = new CancellationTokenSource();
+        var token = _fixCts.Token;
+        // What is being said now would arrive after the correction and be mixed up with it.
+        _segmenter.Flush();
+        _paused = true;
+        SetWhisperInfo(Loc.T("Main.Fixing"), Color.FromRgb(0xfd, 0xd6, 0x63));
+        try
+        {
+            // Sentences that are still being transcribed belong to the text.
+            while (_pending > 0) await Task.Delay(50, token);
+            var text = TranscriptText();
+            if (text.Length == 0)
+            {
+                SetWhisperInfo("", Color.FromRgb(0x9a, 0xa0, 0xa6));
+                return;
+            }
+            var started = System.Diagnostics.Stopwatch.StartNew();
+            var corrected = await Llm.LlmClient.FixAsync(_settings, text, token);
+            _original = text;
+            SetTranscriptText(corrected);
+            _lastFixedText = TranscriptText();
+            RevertButton.Visibility = Visibility.Visible;
+            SetWhisperInfo(Loc.T("Main.Fixed", started.Elapsed.TotalSeconds,
+                Loc.T(_previousWindow == IntPtr.Zero ? "Main.Fixed.Copy" : "Main.Fixed.Paste")), Color.FromRgb(0x81, 0xc9, 0x95));
+        }
+        catch (OperationCanceledException)
+        {
+            _lastFixedText = TranscriptText();
+            SetWhisperInfo(Loc.T("Main.FixCancelled"), Color.FromRgb(0xfd, 0xd6, 0x63));
+        }
+        catch (Llm.LlmException ex)
+        {
+            // The original text stays; the next Enter pastes it instead of trying again.
+            Log.Write($"Text correction failed: {ex.Message}");
+            _lastFixedText = TranscriptText();
+            SetWhisperInfo(Loc.T("Main.FixFailed", ex.Message), Color.FromRgb(0xfd, 0xd6, 0x63));
+        }
+        finally
+        {
+            _paused = false;
+            _fixing = false;
+            FixButton.IsEnabled = true;
+            _fixCts.Dispose();
+            _fixCts = null;
+            Transcript.Focus();
+        }
+    }
+
+    private void OnRevertClick(object sender, RoutedEventArgs e)
+    {
+        if (_original == null || _fixing) return;
+        SetTranscriptText(_original);
+        _lastFixedText = TranscriptText();
+        _original = null;
+        RevertButton.Visibility = Visibility.Collapsed;
+        SetWhisperInfo("", Color.FromRgb(0x9a, 0xa0, 0xa6));
+        Transcript.Focus();
     }
 
     private void Cancel()

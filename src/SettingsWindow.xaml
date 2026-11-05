@@ -67,6 +67,39 @@
         </ScrollViewer>
       </TabItem>
 
+      <TabItem x:Name="LlmTab" Header="{local:Loc Set.Tab.Llm}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="14">
+          <TextBlock TextWrapping="Wrap" Text="{local:Loc Set.Llm.Intro}" />
+          <CheckBox x:Name="LlmCheck" Margin="0,10,0,0" Content="{local:Loc Set.Llm.Enable}" />
+
+          <TextBlock Text="{local:Loc Set.Llm.Provider}" FontWeight="SemiBold" Margin="0,14,0,0" />
+          <ComboBox x:Name="LlmProviderCombo" Margin="0,6,0,0" DisplayMemberPath="Label" SelectionChanged="OnLlmProviderChanged" />
+          <TextBlock Text="{local:Loc Set.Llm.Url}" FontWeight="SemiBold" Margin="0,10,0,0" />
+          <TextBox x:Name="LlmUrlBox" Margin="0,6,0,0" VerticalContentAlignment="Center" />
+          <TextBlock Text="{local:Loc Set.Llm.Model}" FontWeight="SemiBold" Margin="0,10,0,0" />
+          <TextBox x:Name="LlmModelBox" Margin="0,6,0,0" VerticalContentAlignment="Center" />
+          <TextBlock Text="{local:Loc Set.Llm.Key}" FontWeight="SemiBold" Margin="0,10,0,0" />
+          <PasswordBox x:Name="LlmKeyBox" Margin="0,6,0,0" VerticalContentAlignment="Center" />
+          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Llm.Key.Hint}" />
+          <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+            <Button x:Name="LlmTestButton" Content="{local:Loc Set.Llm.Test}" Padding="12,4" Click="OnLlmTest" />
+          </StackPanel>
+          <TextBlock x:Name="LlmResult" Margin="0,8,0,0" TextWrapping="Wrap" />
+
+          <DockPanel Margin="0,14,0,0">
+            <Button Content="{local:Loc Set.Llm.Prompt.Reset}" DockPanel.Dock="Right" Padding="10,3" Click="OnLlmPromptReset" />
+            <TextBlock Text="{local:Loc Set.Llm.Prompt}" FontWeight="SemiBold" VerticalAlignment="Center" />
+          </DockPanel>
+          <TextBox x:Name="LlmPromptBox" Margin="0,6,0,0" Height="130" TextWrapping="Wrap" AcceptsReturn="True"
+                   VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" />
+          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Llm.Prompt.Hint}" />
+
+          <CheckBox x:Name="LlmAutoCheck" Margin="0,14,0,0" Content="{local:Loc Set.Llm.Auto}" />
+        </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
       <TabItem Header="{local:Loc Set.Tab.Recording}">
         <StackPanel Margin="14">
           <TextBlock Text="{local:Loc Set.Mic}" FontWeight="SemiBold" />

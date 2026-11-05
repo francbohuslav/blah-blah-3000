@@ -1,5 +1,8 @@
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BlahBlah3000;
 
@@ -70,6 +73,45 @@ internal sealed class Settings
 
     /// <summary>true = after the hold delay the push-to-talk keys can be released; the next press of them stops the recording.</summary>
     public bool PushToTalkLatch { get; set; }
+
+    /// <summary>AI text correction in the dictation window (an OpenAI-compatible chat endpoint); off by default.</summary>
+    public bool LlmEnabled { get; set; }
+
+    /// <summary>Base URL of the endpoint, e.g. "https://api.openai.com/v1"; "/chat/completions" is appended.</summary>
+    public string LlmBaseUrl { get; set; } = "https://api.openai.com/v1";
+
+    public string LlmModel { get; set; } = "gpt-4o-mini";
+
+    /// <summary>The user's own system prompt; empty = the built-in default in the current interface language.</summary>
+    public string LlmPrompt { get; set; } = "";
+
+    /// <summary>Correct the text automatically when Enter is pressed (the result is shown and Enter must be pressed again to paste it).</summary>
+    public bool LlmAutoFix { get; set; }
+
+    /// <summary>The API key encrypted for the current Windows user (DPAPI), as Base64; use <see cref="LlmApiKey"/>.</summary>
+    public string LlmApiKeyProtected { get; set; } = "";
+
+    /// <summary>The API key in plain text; stored only encrypted and unreadable for another Windows user or on another computer.</summary>
+    [JsonIgnore]
+    public string LlmApiKey
+    {
+        get
+        {
+            if (LlmApiKeyProtected.Length == 0) return "";
+            try
+            {
+                return Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(LlmApiKeyProtected), null, DataProtectionScope.CurrentUser));
+            }
+            catch (Exception ex) when (ex is CryptographicException or FormatException)
+            {
+                Log.Write("The saved API key cannot be decrypted (another user or computer); enter it again");
+                return "";
+            }
+        }
+        set => LlmApiKeyProtected = value.Length == 0
+            ? ""
+            : Convert.ToBase64String(ProtectedData.Protect(Encoding.UTF8.GetBytes(value), null, DataProtectionScope.CurrentUser));
+    }
 
     /// <summary>Start with Windows (HKCU\...\Run entry, started with --tray).</summary>
     public bool Autostart { get; set; }

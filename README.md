@@ -35,6 +35,10 @@ rights needed. You also need the [.NET 10 Desktop Runtime](https://dotnet.micros
   The computer's sound can optionally be lowered (or muted) while recording and put back afterwards.
   The text is typed as keyboard input, so it does not reach windows running as administrator, and the global
   keyboard hook it needs may be flagged by some antivirus products.
+- Optional AI text correction in the dictation window (button or `Ctrl+K`, or automatically when you press Enter): the text is
+  sent to an AI service of your choice with your own API key (any OpenAI-compatible endpoint: OpenAI, Groq, Gemini, xAI,
+  OpenRouter, or a local one such as Ollama), the result is shown for you to check, and you can go back to the original.
+  The instructions for the AI are editable. Off by default; the speech recognition always stays on your computer.
 - Sentences are transcribed as you pause, so you see the text while you speak; you can edit it before pressing Enter.
 - A free-text hint (terms, names, a style sample) that is passed to Whisper before every transcription.
 - Replacements applied after transcription (e.g. "dot com" → ".com"), as plain text or, per row, as a regular expression; replaced text is highlighted and shows the original.

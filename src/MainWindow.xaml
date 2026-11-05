@@ -58,6 +58,12 @@
         <Button x:Name="AddRuleButton" Style="{StaticResource IconButton}" Content="&#xE8AB;" DockPanel.Dock="Right"
                 Margin="6,-5,0,-5" Foreground="#8ab4f8" IsEnabled="False" ToolTipService.Placement="Left"
                 ToolTip="{local:Loc Main.AddRuleTip}" Click="OnAddRuleClick" />
+        <Button x:Name="RevertButton" Style="{StaticResource IconButton}" Content="&#xE7A7;" DockPanel.Dock="Right"
+                Margin="6,-5,0,-5" Foreground="#bdc1c6" Visibility="Collapsed" ToolTipService.Placement="Left"
+                ToolTip="{local:Loc Main.RevertTip}" Click="OnRevertClick" />
+        <Button x:Name="FixButton" Style="{StaticResource IconButton}" Content="&#xE70F;" DockPanel.Dock="Right"
+                Margin="6,-5,0,-5" Foreground="#fdd663" Visibility="Collapsed" ToolTipService.Placement="Left"
+                ToolTip="{local:Loc Main.FixTip}" Click="OnFixClick" />
         <TextBlock x:Name="HintText" Text="{local:Loc Main.Hint.Paste}" Foreground="#9aa0a6" FontSize="12"
                    DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0,0,28,0" />
       </DockPanel>
