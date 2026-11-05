@@ -18,6 +18,7 @@ internal sealed class PushToTalkSession : IDisposable
     private readonly SentenceSegmenter _segmenter = new();
     // Separate files, so the debug output of the dictation window is not overwritten.
     private readonly DebugDump _debug;
+    private readonly VolumeDucker _ducker = new();
     private readonly Channel<byte[]> _sentences = Channel.CreateUnbounded<byte[]>();
     private readonly CancellationTokenSource _cts = new();
     private readonly object _audioLock = new();
@@ -83,6 +84,9 @@ internal sealed class PushToTalkSession : IDisposable
         _recorder.Start(option.Number);
         _consumer = Task.Run(ConsumeAsync);
         Log.Write($"Push to talk started: {option.Label} (device {option.Number})");
+        if (_settings.PushToTalkSounds) PushToTalkSounds.PlayStart();
+        // A moment later, so the start tone is still heard at the normal volume.
+        if (_settings.PushToTalkDuckPercent < 100) _ = _ducker.DuckAsync(TimeSpan.FromMilliseconds(150), _settings.PushToTalkDuckPercent);
     }
 
     /// <summary>Ends the recording, waits until the last sentence is transcribed and typed, and releases the microphone.</summary>
@@ -90,6 +94,7 @@ internal sealed class PushToTalkSession : IDisposable
     {
         await Task.Delay(ReleaseTailMs);
         _recorder.Stop();
+        _ducker.Restore();
         // Only now, so the tone is not picked up by the microphone.
         if (_settings.PushToTalkSounds) PushToTalkSounds.PlayStop();
         lock (_audioLock)
@@ -138,6 +143,7 @@ internal sealed class PushToTalkSession : IDisposable
         _disposed = true;
         _cts.Cancel();
         _recorder.Dispose();
+        _ducker.Restore();
         _debug.Dispose();
         _cts.Dispose();
     }

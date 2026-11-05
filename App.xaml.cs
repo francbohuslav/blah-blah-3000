@@ -50,6 +50,7 @@ public partial class App : Application
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
         LegacyMigration.Run();
         Log.Write("=== start ===");
+        VolumeDucker.RecoverAfterCrash();
         DispatcherUnhandledException += (_, args) => Log.Write($"Unhandled exception (UI): {args.Exception}");
         AppDomain.CurrentDomain.UnhandledException += (_, args) => Log.Write($"Unhandled exception: {args.ExceptionObject}");
         TaskScheduler.UnobservedTaskException += (_, args) => Log.Write($"Unhandled exception (task): {args.Exception}");
@@ -232,7 +233,6 @@ public partial class App : Application
         _latchedSince = 0;
         AutoStopTimer.Start();
         _tray?.SetRecording(true);
-        if (Settings.PushToTalkSounds) PushToTalkSounds.PlayStart();
     }
 
     /// <summary>

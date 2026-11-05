@@ -59,6 +59,9 @@ internal sealed class Settings
     /// <summary>How long (ms) the push-to-talk keys must be held before recording starts; a longer delay leaves room for ordinary shortcuts.</summary>
     public int PushToTalkDelayMs { get; set; } = 300;
 
+    /// <summary>Push to talk lowers the computer's sound to this percentage of the current volume while recording; 100 = off, 0 = mute.</summary>
+    public int PushToTalkDuckPercent { get; set; } = 100;
+
     /// <summary>Play a short tone when push to talk starts and when it ends.</summary>
     public bool PushToTalkSounds { get; set; } = true;
 
