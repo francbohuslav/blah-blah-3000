@@ -48,5 +48,5 @@ export const NARRATION: NarrationLine[] = [
   { id: "tour-replace", at: 81.5, text: "Your own replacements and hints." },
   { id: "tour-api", at: 84.9, text: "And a REST API, if you want more." },
   // Outro
-  { id: "outro", at: 88.9, text: "Blah Blah three thousand. Free, open source, and fully local." },
+  { id: "outro", at: 88.9, text: "Blah Blah three thousand. Free and open source." },
 ];
