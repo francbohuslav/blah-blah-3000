@@ -395,6 +395,7 @@ public partial class MainWindow : Window
     {
         var on = _settings.LlmEnabled;
         FixButton.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+        UpdateFixButton();
         if (!on) RevertButton.Visibility = Visibility.Collapsed;
         var clipboard = _previousWindow == IntPtr.Zero;
         HintText.Text = Loc.T(on && _settings.LlmAutoFix
