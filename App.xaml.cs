@@ -204,6 +204,7 @@ public partial class App : Application
             }
         }
 
+        Transcriber.ReloadIfDeviceChanged(Settings.GpuDevice);
         _ = ApplyApiAsync();
         RefreshTray();
     }

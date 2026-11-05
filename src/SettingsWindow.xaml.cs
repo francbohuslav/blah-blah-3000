@@ -45,6 +45,14 @@ public partial class SettingsWindow : Window
         ListenAllCheck.IsChecked = settings.ApiListenAll;
         UnloadBox.Text = settings.UnloadAfterMinutes.ToString();
         DebugCheck.IsChecked = settings.DebugRecording;
+        var gpus = new List<LanguageOption> { new("", Loc.T("Set.Gpu.Auto")) };
+        gpus.AddRange(Whisper.GpuDevices.List().Select(d => new LanguageOption(d.Name, d.Name)));
+        if (settings.GpuDevice.Length > 0 && gpus.All(g => g.Code != settings.GpuDevice))
+        {
+            gpus.Add(new(settings.GpuDevice, Loc.T("Set.Gpu.Missing", settings.GpuDevice)));
+        }
+        GpuCombo.ItemsSource = gpus;
+        GpuCombo.SelectedValue = settings.GpuDevice;
         PromptBox.Text = settings.Prompt;
         _rules = new ObservableCollection<ReplacementRule>(
             settings.Replacements.Select(r => new ReplacementRule { Pattern = r.Pattern, Replacement = r.Replacement, IsRegex = r.IsRegex }));
@@ -266,6 +274,7 @@ public partial class SettingsWindow : Window
         _settings.UiLanguage = UiLanguageCombo.SelectedValue as string ?? Loc.Auto;
         _settings.Language = LanguageCombo.SelectedValue as string ?? "auto";
         _settings.DebugRecording = DebugCheck.IsChecked == true;
+        _settings.GpuDevice = GpuCombo.SelectedValue as string ?? "";
         _settings.Prompt = PromptBox.Text.Trim();
         _settings.Replacements = _rules.Where(r => !string.IsNullOrEmpty(r.Pattern)).ToList();
         _settings.SilenceThreshold = ThresholdSlider.Value;

@@ -160,6 +160,10 @@
           </StackPanel>
           <TextBlock x:Name="AdvancedResult" Margin="0,8,0,0" TextWrapping="Wrap" />
 
+          <TextBlock Text="{local:Loc Set.Gpu.Title}" FontWeight="SemiBold" Margin="0,22,0,0" />
+          <ComboBox x:Name="GpuCombo" Margin="0,6,0,0" DisplayMemberPath="Label" SelectedValuePath="Code" />
+          <TextBlock Text="{local:Loc Set.Gpu.Note}" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="Gray" />
+
           <TextBlock Text="{local:Loc Set.Debug.Title}" FontWeight="SemiBold" Margin="0,22,0,0" />
           <CheckBox x:Name="DebugCheck" Margin="0,6,0,0" Content="{local:Loc Set.Debug}" />
         </StackPanel>

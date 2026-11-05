@@ -127,6 +127,9 @@ internal sealed class Settings
     /// <summary>After how many minutes of inactivity the model is unloaded from memory; 0 = never.</summary>
     public int UnloadAfterMinutes { get; set; }
 
+    /// <summary>Name of the graphics card Whisper should use; empty = automatic (a discrete GPU before an integrated one).</summary>
+    public string GpuDevice { get; set; } = "";
+
     /// <summary>Look on GitHub for a newer version (at startup and once a day).</summary>
     public bool CheckForUpdates { get; set; } = true;
 

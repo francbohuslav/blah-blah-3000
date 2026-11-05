@@ -15,6 +15,7 @@ internal sealed class LocalTranscriber
     private Task? _loading;
     private CancellationTokenSource? _download;
     private DateTime _lastUse = DateTime.UtcNow;
+    private string _loadedDevice = "";
 
     public TranscriberState State { get; private set; } = TranscriberState.Idle;
 
@@ -121,8 +122,14 @@ internal sealed class LocalTranscriber
             SetState(TranscriberState.Loading);
             var started = System.Diagnostics.Stopwatch.StartNew();
             RuntimeOptions.RuntimeLibraryOrder = [RuntimeLibrary.Vulkan, RuntimeLibrary.Cpu];
-            var factory = WhisperFactory.FromPath(ModelStore.ModelPath);
-            Log.Write($"Model loaded in {started.ElapsedMilliseconds} ms, runtime: {RuntimeOptions.LoadedLibrary}");
+            var devices = GpuDevices.List();
+            Log.Write($"Vulkan devices: {(devices.Count == 0 ? "none" : string.Join("; ", devices.Select(d => $"{d.Index}: {d.Name}{(d.Discrete ? " (discrete)" : "")}")))}");
+            _loadedDevice = App.Settings.GpuDevice;
+            var device = GpuDevices.Resolve(_loadedDevice, out var deviceText);
+            var options = WhisperFactoryOptions.Default;
+            if (device >= 0) options.GpuDevice = device;
+            var factory = WhisperFactory.FromPath(ModelStore.ModelPath, options);
+            Log.Write($"Model loaded in {started.ElapsedMilliseconds} ms, runtime: {RuntimeOptions.LoadedLibrary}, GPU: {deviceText}");
             // Warm-up on 1 s of silence so the first real sentence does not wait for GPU initialization.
             await TranscribeCoreAsync(factory, new float[16_000], "", "auto", CancellationToken.None);
             Log.Write($"Warm-up finished in {started.ElapsedMilliseconds} ms");
@@ -137,6 +144,27 @@ internal sealed class LocalTranscriber
             SetState(TranscriberState.Error, ex.Message);
             throw;
         }
+    }
+
+    /// <summary>Loads the model again when another graphics card was chosen in the settings (it is loaded on the next use if it was unloaded).</summary>
+    public void ReloadIfDeviceChanged(string deviceName)
+    {
+        if (_factory == null || deviceName == _loadedDevice || !_gate.Wait(0)) return;
+        try
+        {
+            lock (_loadLock)
+            {
+                _factory.Dispose();
+                _factory = null;
+                _loading = null;
+            }
+            Log.Write($"Graphics card changed to \"{deviceName}\", reloading the model");
+        }
+        finally
+        {
+            _gate.Release();
+        }
+        Start();
     }
 
     /// <summary>Unloads the model from memory if it has not been used for longer than <paramref name="idle"/> and nothing is being transcribed.</summary>
