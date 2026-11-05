@@ -10,7 +10,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <TabControl Grid.Row="0">
+    <TabControl x:Name="SettingsTabs" Grid.Row="0">
       <TabItem Header="{local:Loc Set.Tab.General}">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="14">
@@ -30,23 +30,23 @@
                      ToolTip="{local:Loc Set.Hotkey.Tip}" />
           </DockPanel>
           <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Hotkey.Hint}" />
+
+          <TextBlock Text="{local:Loc Set.Ptt}" FontWeight="SemiBold" Margin="0,16,0,0" />
+          <CheckBox x:Name="PttCheck" Margin="0,6,0,0" Content="{local:Loc Set.Ptt.Enable}" />
+          <ComboBox x:Name="PttKeysCombo" Margin="0,6,0,0" DisplayMemberPath="Label" SelectedValuePath="Code" />
+          <TextBlock x:Name="PttDelayLabel" Margin="0,10,0,0" />
+          <Slider x:Name="PttDelaySlider" Minimum="100" Maximum="1500" TickFrequency="50" IsSnapToTickEnabled="True"
+                  Margin="0,2,0,0" ValueChanged="OnSliderChanged" />
+          <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Ptt.Hint}" />
+
           <CheckBox x:Name="AutostartCheck" Margin="0,16,0,0" Content="{local:Loc Set.Autostart}" />
           <CheckBox x:Name="UpdatesCheck" Margin="0,6,0,0" Content="{local:Loc Set.CheckUpdates}" />
-
-          <TextBlock Text="{local:Loc Set.Api}" FontWeight="SemiBold" Margin="0,16,0,0" />
-          <CheckBox x:Name="ApiCheck" Margin="0,6,0,0" Content="{local:Loc Set.Api.Enable}" />
-          <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-            <TextBlock Text="{local:Loc Set.Port}" VerticalAlignment="Center" />
-            <TextBox x:Name="PortBox" Width="70" Margin="8,0,0,0" VerticalContentAlignment="Center" />
-            <CheckBox x:Name="ListenAllCheck" Margin="16,0,0,0" VerticalAlignment="Center" Content="{local:Loc Set.ListenAll}" />
-          </StackPanel>
 
           <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
             <TextBlock Text="{local:Loc Set.Unload.Before}" VerticalAlignment="Center" />
             <TextBox x:Name="UnloadBox" Width="50" Margin="8,0,0,0" VerticalContentAlignment="Center" />
             <TextBlock Text="{local:Loc Set.Unload.After}" Margin="8,0,0,0" VerticalAlignment="Center" />
           </StackPanel>
-          <CheckBox x:Name="DebugCheck" Margin="0,22,0,0" Content="{local:Loc Set.Debug}" />
         </StackPanel>
         </ScrollViewer>
       </TabItem>
@@ -96,6 +96,22 @@
             </DataGrid.Columns>
           </DataGrid>
         </Grid>
+      </TabItem>
+
+      <TabItem x:Name="AdvancedTab" Header="{local:Loc Set.Tab.Advanced}">
+        <StackPanel Margin="14">
+          <TextBlock Text="{local:Loc Set.Api}" FontWeight="SemiBold" />
+          <CheckBox x:Name="ApiCheck" Margin="0,6,0,0" Content="{local:Loc Set.Api.Enable}" />
+          <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+            <TextBlock Text="{local:Loc Set.Port}" VerticalAlignment="Center" />
+            <TextBox x:Name="PortBox" Width="70" Margin="8,0,0,0" VerticalContentAlignment="Center" />
+            <CheckBox x:Name="ListenAllCheck" Margin="16,0,0,0" VerticalAlignment="Center" Content="{local:Loc Set.ListenAll}" />
+          </StackPanel>
+          <TextBlock x:Name="AdvancedResult" Margin="0,8,0,0" TextWrapping="Wrap" />
+
+          <TextBlock Text="{local:Loc Set.Debug.Title}" FontWeight="SemiBold" Margin="0,22,0,0" />
+          <CheckBox x:Name="DebugCheck" Margin="0,6,0,0" Content="{local:Loc Set.Debug}" />
+        </StackPanel>
       </TabItem>
     </TabControl>
 

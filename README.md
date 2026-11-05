@@ -29,6 +29,10 @@ rights needed. You also need the [.NET 10 Desktop Runtime](https://dotnet.micros
   GPU-accelerated with Vulkan and a CPU fallback.
 - Global shortcut (default `Win+Shift+D`): the text is pasted into the window that was active when you pressed it.
   Opening dictation from the tray icon copies the result to the clipboard instead.
+- Optional push to talk (off by default, enable it in the settings): hold `Ctrl+Shift` (or Left/Right Ctrl, Left/Right Shift alone) for a configurable time and speak;
+  every sentence is typed into the active window at the cursor, without opening the dictation window. The tray icon turns red
+  while recording. The text is typed as keyboard input, so it does not reach windows running as administrator, and the global
+  keyboard hook it needs may be flagged by some antivirus products.
 - Sentences are transcribed as you pause, so you see the text while you speak; you can edit it before pressing Enter.
 - A free-text hint (terms, names, a style sample) that is passed to Whisper before every transcription.
 - Replacements applied after transcription (e.g. "dot com" → ".com"), as plain text or, per row, as a regular expression; replaced text is highlighted and shows the original.
@@ -87,6 +91,7 @@ consent, and the download can be cancelled at any time. You can also place the f
 | --- | --- |
 | Global shortcut | Opens dictation; the text is pasted into the window that was active |
 | Click the tray icon | Opens dictation; the text is copied to the clipboard |
+| Hold the push-to-talk keys | Records; each sentence is typed into the active window as you pause (optional) |
 | Enter | Finish: paste or copy the text |
 | Shift+Enter | New line |
 | Esc | Cancel |

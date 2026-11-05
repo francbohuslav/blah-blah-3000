@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using BlahBlah3000.Api;
+using BlahBlah3000.Dictation;
 using BlahBlah3000.Native;
 using BlahBlah3000.Update;
 using BlahBlah3000.Whisper;
@@ -24,6 +25,8 @@ public partial class App : Application
     private static DispatcherTimer? _updateTimer;
     private static string? _apiError;
     private static bool _hotkeyFailed;
+    private static KeyboardHook? _pushToTalkHook;
+    private static PushToTalkSession? _pushToTalk;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -67,6 +70,11 @@ public partial class App : Application
 
         _hotkey = new GlobalHotkey();
         _hotkey.Pressed += () => StartSession(Win32.GetForegroundWindow());
+
+        _pushToTalkHook = new KeyboardHook();
+        _pushToTalkHook.Engaged += StartPushToTalk;
+        // The hook callback must return quickly, so ending the recording is left to the dispatcher.
+        _pushToTalkHook.Released += () => Dispatcher.BeginInvoke(StopPushToTalk);
 
         Transcriber.StateChanged += () => Dispatcher.BeginInvoke(RefreshTray);
         _idleTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
@@ -179,8 +187,62 @@ public partial class App : Application
             _tray?.Notify(Loc.T("Tray.HotkeyFailed", Settings.Hotkey), warning: true);
         }
 
+        if (_pushToTalkHook != null)
+        {
+            if (!Settings.PushToTalkEnabled) _pushToTalkHook.Disable();
+            else if (!_pushToTalkHook.Enable(Settings.PushToTalkKeys, TimeSpan.FromMilliseconds(Settings.PushToTalkDelayMs)))
+            {
+                Log.Write($"Cannot enable push to talk ({Settings.PushToTalkKeys})");
+                _tray?.Notify(Loc.T("Tray.PttHookFailed"), warning: true);
+            }
+        }
+
         _ = ApplyApiAsync();
         RefreshTray();
+    }
+
+    /// <summary>The push-to-talk keys were held: records and types the transcript into the active window until they are released.</summary>
+    private static void StartPushToTalk()
+    {
+        // The dictation window owns the microphone and the keyboard focus while it is open.
+        if (_pushToTalk != null || _session != null) return;
+        if (Transcriber.State is TranscriberState.ModelMissing or TranscriberState.Downloading or TranscriberState.Error)
+        {
+            _tray?.Notify(Loc.T("Tray.PttModelUnavailable"), warning: true);
+            return;
+        }
+        var session = new PushToTalkSession(Settings, message => Current.Dispatcher.BeginInvoke(() => _tray?.Notify(message, warning: true)));
+        try
+        {
+            session.Start();
+        }
+        catch (Exception ex)
+        {
+            Log.Write($"Push to talk failed to start: {ex}");
+            session.Dispose();
+            _tray?.Notify(Loc.T("Main.MicOpenFailed", ex.Message), warning: true);
+            return;
+        }
+        _pushToTalk = session;
+        _tray?.SetRecording(true);
+    }
+
+    private static async void StopPushToTalk()
+    {
+        var session = _pushToTalk;
+        if (session == null) return;
+        _pushToTalk = null;
+        try
+        {
+            await session.StopAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Write($"Push to talk failed to finish: {ex}");
+            session.Dispose();
+        }
+        // The icon stays red until the last sentence is typed, unless a new recording has started meanwhile.
+        if (_pushToTalk == null) _tray?.SetRecording(false);
     }
 
     private static async Task ApplyApiAsync()
@@ -233,6 +295,8 @@ public partial class App : Application
         _idleTimer?.Stop();
         _updateTimer?.Stop();
         _hotkey?.Dispose();
+        _pushToTalkHook?.Dispose();
+        _pushToTalk?.Dispose();
         _tray?.Dispose();
         // Off the UI thread, so the wait does not block the return to the synchronization context.
         Task.Run(() => Api.StopAsync()).Wait(TimeSpan.FromSeconds(3));

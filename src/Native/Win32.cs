@@ -8,6 +8,7 @@ internal static class Win32
     private const ushort VkV = 0x56;
     private const uint InputKeyboard = 1;
     private const uint KeyUp = 0x0002;
+    private const uint KeyUnicode = 0x0004;
 
     [DllImport("user32.dll")]
     public static extern IntPtr GetForegroundWindow();
@@ -15,7 +16,7 @@ internal static class Win32
     [DllImport("user32.dll")]
     public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", SetLastError = true)]
     private static extern uint SendInput(uint count, Input[] inputs, int size);
 
     [DllImport("user32.dll")]
@@ -97,10 +98,42 @@ internal static class Win32
         SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<Input>());
     }
 
+    /// <summary>Sends a key-up for each of the virtual keys, so the active window sees them as released while the user still holds them.</summary>
+    public static void SendKeyUps(IEnumerable<int> virtualKeys)
+    {
+        var inputs = virtualKeys.Select(vk => Key((ushort)vk, KeyUp)).ToArray();
+        if (inputs.Length > 0) SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<Input>());
+    }
+
+    /// <summary>
+    /// Types the text into the active window at its caret as Unicode key events. Modifiers must not be down in the target meanwhile,
+    /// otherwise the letters arrive as shortcuts (see <see cref="KeyboardHook"/>, which hides held push-to-talk keys).
+    /// </summary>
+    /// <returns>a description of what was sent (events accepted by Windows), for the log</returns>
+    public static string TypeText(string text)
+    {
+        if (text.Length == 0) return "nothing to type";
+        var inputs = new List<Input>();
+        foreach (var ch in text)
+        {
+            inputs.Add(Unicode(ch, 0));
+            inputs.Add(Unicode(ch, KeyUp));
+        }
+        var sent = SendInput((uint)inputs.Count, inputs.ToArray(), Marshal.SizeOf<Input>());
+        var error = sent == inputs.Count ? "" : $", error {Marshal.GetLastWin32Error()}";
+        return $"{text.Length} chars, {sent}/{inputs.Count} events accepted{error}";
+    }
+
     private static Input Key(ushort vk, uint flags) => new()
     {
         Type = InputKeyboard,
         Union = new InputUnion { Keyboard = new KeyboardInput { VirtualKey = vk, Flags = flags } },
+    };
+
+    private static Input Unicode(char ch, uint flags) => new()
+    {
+        Type = InputKeyboard,
+        Union = new InputUnion { Keyboard = new KeyboardInput { ScanCode = ch, Flags = KeyUnicode | flags } },
     };
 
     [StructLayout(LayoutKind.Sequential)]

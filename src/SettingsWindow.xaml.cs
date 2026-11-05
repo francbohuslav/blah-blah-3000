@@ -25,6 +25,17 @@ public partial class SettingsWindow : Window
         LanguageCombo.SelectedValue = Languages.All.Any(l => l.Code == settings.Language) ? settings.Language : "auto";
         ShowModelState();
         HotkeyBox.Text = settings.Hotkey;
+        PttCheck.IsChecked = settings.PushToTalkEnabled;
+        PttKeysCombo.ItemsSource = new LanguageOption[]
+        {
+            new("Ctrl+Shift", Loc.T("Set.Ptt.Keys.CtrlShift")),
+            new("LeftCtrl", Loc.T("Set.Ptt.Keys.LeftCtrl")),
+            new("LeftShift", Loc.T("Set.Ptt.Keys.LeftShift")),
+            new("RightCtrl", Loc.T("Set.Ptt.Keys.RightCtrl")),
+            new("RightShift", Loc.T("Set.Ptt.Keys.RightShift")),
+        };
+        PttKeysCombo.SelectedValue = settings.PushToTalkKeys;
+        if (PttKeysCombo.SelectedItem == null) PttKeysCombo.SelectedIndex = 0;
         AutostartCheck.IsChecked = settings.Autostart;
         UpdatesCheck.IsChecked = settings.CheckForUpdates;
         ApiCheck.IsChecked = settings.ApiEnabled;
@@ -38,6 +49,7 @@ public partial class SettingsWindow : Window
         RulesGrid.ItemsSource = _rules;
         ThresholdSlider.Value = settings.SilenceThreshold;
         PauseSlider.Value = settings.PauseMs;
+        PttDelaySlider.Value = Math.Clamp(settings.PushToTalkDelayMs, PttDelaySlider.Minimum, PttDelaySlider.Maximum);
         UpdateLabels();
 
         _recorder.Data += OnMicData;
@@ -77,9 +89,11 @@ public partial class SettingsWindow : Window
 
     private void UpdateLabels()
     {
-        if (ThresholdLabel == null || PauseLabel == null) return;
+        // The sliders raise ValueChanged while the window is still being built, before all labels exist.
+        if (ThresholdLabel == null || PauseLabel == null || PttDelayLabel == null) return;
         ThresholdLabel.Text = Loc.T("Set.Threshold", ThresholdSlider.Value);
         PauseLabel.Text = Loc.T("Set.Pause", PauseSlider.Value);
+        PttDelayLabel.Text = Loc.T("Set.Ptt.Delay", PttDelaySlider.Value);
     }
 
     private void OnSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e) => UpdateLabels();
@@ -108,10 +122,13 @@ public partial class SettingsWindow : Window
 
     private void OnSave(object sender, RoutedEventArgs e)
     {
+        AdvancedResult.Text = "";
         if (!int.TryParse(PortBox.Text.Trim(), out var port) || port is < 1 or > 65535)
         {
-            TestResult.Foreground = Brushes.Firebrick;
-            TestResult.Text = Loc.T("Set.PortInvalid");
+            // The port lives on the Advanced tab, so the message is shown there and the tab is brought forward.
+            AdvancedResult.Foreground = Brushes.Firebrick;
+            AdvancedResult.Text = Loc.T("Set.PortInvalid");
+            SettingsTabs.SelectedItem = AdvancedTab;
             return;
         }
         if (!int.TryParse(UnloadBox.Text.Trim(), out var unload) || unload < 0)
@@ -141,6 +158,9 @@ public partial class SettingsWindow : Window
 
         _settings.Microphone = (MicCombo.SelectedItem as Audio.MicOption)?.Name;
         _settings.Hotkey = HotkeyBox.Text;
+        _settings.PushToTalkEnabled = PttCheck.IsChecked == true;
+        _settings.PushToTalkKeys = PttKeysCombo.SelectedValue as string ?? "Ctrl+Shift";
+        _settings.PushToTalkDelayMs = (int)PttDelaySlider.Value;
         _settings.Autostart = AutostartCheck.IsChecked == true;
         _settings.CheckForUpdates = UpdatesCheck.IsChecked == true;
         _settings.ApiEnabled = ApiCheck.IsChecked == true;

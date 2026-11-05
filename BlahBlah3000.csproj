@@ -33,6 +33,19 @@
     <Resource Include="assets\BlahBlah3000.ico" />
   </ItemGroup>
 
+  <!--
+    A repeated single-file publish into the same folder drops the native Whisper libraries: the SDK deletes the files of the previous
+    publish and, on the incremental run, does not copy the runtimes folder again. This copies them after every publish.
+  -->
+  <Target Name="CopyWhisperRuntimesToPublishDir" AfterTargets="Publish" Condition="'$(PublishSingleFile)' == 'true'">
+    <ItemGroup>
+      <_WhisperRuntimeFile Include="@(None)"
+                           Condition="'%(None.TargetPath)' != '' And $([System.String]::new('%(None.TargetPath)').StartsWith('runtimes/'))" />
+    </ItemGroup>
+    <Error Condition="'@(_WhisperRuntimeFile)' == ''" Text="The native Whisper libraries (runtimes/*) were not found among the project items." />
+    <Copy SourceFiles="@(_WhisperRuntimeFile)" DestinationFiles="@(_WhisperRuntimeFile->'$(PublishDir)%(TargetPath)')" SkipUnchangedFiles="true" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="NAudio.WinMM" Version="2.2.1" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />

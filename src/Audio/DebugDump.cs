@@ -14,7 +14,8 @@ internal sealed class DebugDump : IDisposable
     private int _count;
 
     /// <param name="enabled">false = nothing is saved, only the loudness of sentences is logged</param>
-    public DebugDump(bool enabled)
+    /// <param name="prefix">prepended to the file names, so another kind of session does not overwrite the files of the dictation window</param>
+    public DebugDump(bool enabled, string prefix = "")
     {
         if (!enabled) return;
         string dir;
@@ -30,8 +31,9 @@ internal sealed class DebugDump : IDisposable
         }
         try
         {
-            _file = new WaveFileWriter(Path.Combine(dir, "recording.wav"), new WaveFormat(16_000, 16, 1));
-            Log.Write($"Debug audio: {dir}\recording.wav");
+            var wavePath = Path.Combine(dir, prefix + "recording.wav");
+            _file = new WaveFileWriter(wavePath, new WaveFormat(16_000, 16, 1));
+            Log.Write($"Debug audio: {wavePath}");
         }
         catch (Exception ex)
         {
@@ -39,7 +41,7 @@ internal sealed class DebugDump : IDisposable
         }
         try
         {
-            _transcriptPath = Path.Combine(dir, "transcripts.txt");
+            _transcriptPath = Path.Combine(dir, prefix + "transcripts.txt");
             File.WriteAllText(_transcriptPath, "");
             Log.Write($"Debug transcripts: {_transcriptPath}");
         }

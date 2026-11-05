@@ -20,6 +20,11 @@ internal static class Strings
         ["Tray.ApiDown"] = (" (API not running)", " (API nejede)"),
         ["Tray.HotkeyFailed"] = ("Cannot register the shortcut {0}; another application uses it. Change it in settings.",
             "Zkratku {0} nejde zaregistrovat, má ji jiná aplikace. Změň ji v nastavení."),
+        ["Tray.Recording"] = ("BlahBlah3000 – recording", "BlahBlah3000 – nahrává"),
+        ["Tray.PttHookFailed"] = ("Cannot start push to talk: the keyboard hook could not be installed.",
+            "Push to talk nejde spustit: nepodařilo se nainstalovat klávesnicový hook."),
+        ["Tray.PttModelUnavailable"] = ("Push to talk is not available: the Whisper model is missing or failed to load.",
+            "Push to talk není dostupný: Whisper model chybí nebo se nenačetl."),
         ["Tray.ApiFailed"] = ("Cannot start the API on port {0}: {1}", "API nejde spustit na portu {0}: {1}"),
 
         // Dictation window
@@ -59,6 +64,8 @@ internal static class Strings
         ["Set.Tab.Hint"] = ("Hint", "Nápověda"),
         ["Set.Tab.Replacements"] = ("Replacements", "Náhrady"),
         ["Set.Tab.Recording"] = ("Recording", "Nahrávání"),
+        ["Set.Tab.Advanced"] = ("Advanced", "Pokročilé"),
+        ["Set.Debug.Title"] = ("Debugging", "Ladění"),
         ["Set.UiLanguage"] = ("Interface language", "Jazyk rozhraní"),
         ["Set.UiLanguage.Hint"] = ("Applies to windows opened from now on.", "Projeví se v nově otevřených oknech."),
         ["Set.UiLanguage.Auto"] = ("Automatic (system language)", "Automaticky (podle systému)"),
@@ -71,6 +78,21 @@ internal static class Strings
             "Klikni sem a stiskni požadovanou kombinaci (alespoň jeden z Ctrl, Alt, Shift, Win)"),
         ["Set.Hotkey.Hint"] = ("Click the field and press a combination. The text is pasted into the window that was active when you pressed it.",
             "Klikni do pole a stiskni kombinaci. Text se vloží do okna, které bylo při stisku aktivní."),
+        ["Set.Ptt"] = ("Push to talk (dictate without a window)", "Push to talk (diktování bez okna)"),
+        ["Set.Ptt.Enable"] = ("Hold the keys below and speak: each sentence is typed into the active window at the cursor",
+            "Drž klávesy níže a mluv: každá věta se napíše do aktivního okna na pozici kurzoru"),
+        ["Set.Ptt.Keys.CtrlShift"] = ("Ctrl + Shift", "Ctrl + Shift"),
+        ["Set.Ptt.Keys.LeftCtrl"] = ("Left Ctrl", "Levý Ctrl"),
+        ["Set.Ptt.Keys.LeftShift"] = ("Left Shift", "Levý Shift"),
+        ["Set.Ptt.Delay"] = ("Hold the keys for: {0:F0} ms before recording starts", "Podržet klávesy: {0:F0} ms, než se začne nahrávat"),
+        ["Set.Ptt.Keys.RightCtrl"] = ("Right Ctrl", "Pravý Ctrl"),
+        ["Set.Ptt.Keys.RightShift"] = ("Right Shift", "Pravý Shift"),
+        ["Set.Ptt.Hint"] = ("Recording starts after the keys are held for the time above and ends when you release them; the tray icon turns red. " +
+            "A longer time lets you use ordinary shortcuts (such as Ctrl+C when Ctrl is a push-to-talk key) without starting a recording. " +
+            "The text is typed like keyboard input, so it does not work in windows running as administrator.",
+            "Nahrávání začne, když klávesy podržíš po dobu nastavenou výše, a skončí po jejich uvolnění; ikona v liště zčervená. " +
+            "Delší doba umožní používat běžné zkratky (třeba Ctrl+C, když je Ctrl klávesou pro push to talk), aniž by se spustilo nahrávání. " +
+            "Text se píše jako vstup z klávesnice, takže nefunguje v oknech spuštěných jako správce."),
         ["Set.Autostart"] = ("Start BlahBlah3000 with Windows (it runs in the tray)", "Spouštět BlahBlah3000 s Windows (poběží v liště)"),
         ["Set.CheckUpdates"] = ("Check for a new version on GitHub", "Kontrolovat novou verzi na GitHubu"),
         ["Set.Api"] = ("REST API for other applications", "REST API pro ostatní aplikace"),

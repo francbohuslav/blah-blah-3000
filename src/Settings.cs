@@ -50,6 +50,15 @@ internal sealed class Settings
     /// <summary>Global shortcut that opens dictation, e.g. "Win+Shift+D"; empty = no shortcut.</summary>
     public string Hotkey { get; set; } = "Win+Shift+D";
 
+    /// <summary>Push to talk: hold <see cref="PushToTalkKeys"/> to dictate straight into the active window, without the dictation window.</summary>
+    public bool PushToTalkEnabled { get; set; }
+
+    /// <summary>Modifier-only combination for push to talk: "Ctrl+Shift", "LeftCtrl", "LeftShift", "RightCtrl" or "RightShift".</summary>
+    public string PushToTalkKeys { get; set; } = "Ctrl+Shift";
+
+    /// <summary>How long (ms) the push-to-talk keys must be held before recording starts; a longer delay leaves room for ordinary shortcuts.</summary>
+    public int PushToTalkDelayMs { get; set; } = 300;
+
     /// <summary>Start with Windows (HKCU\...\Run entry, started with --tray).</summary>
     public bool Autostart { get; set; }
 
