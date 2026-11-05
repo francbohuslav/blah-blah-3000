@@ -73,6 +73,9 @@ internal sealed class KeyboardHook : IDisposable
     /// <summary>The combination has been held for the hold delay without any other key.</summary>
     public event Action? Engaged;
 
+    /// <summary>Latch mode: the engaged keys were let go and the recording goes on (the owner may still decide to end it, see <see cref="EndLatch"/>).</summary>
+    public event Action? Latched;
+
     /// <summary>An engaged combination ended: a modifier was released (or, when latched, the keys were pressed again) or another key was pressed.</summary>
     public event Action? Released;
 
@@ -204,6 +207,7 @@ internal sealed class KeyboardHook : IDisposable
                 // The keys may be let go; the recording goes on until they are pressed again.
                 _engaged = false;
                 _latched = true;
+                Latched?.Invoke();
             }
             else EndEngaged();
         }

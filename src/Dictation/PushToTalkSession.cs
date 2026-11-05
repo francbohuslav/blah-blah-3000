@@ -32,7 +32,13 @@ internal sealed class PushToTalkSession : IDisposable
     private bool _stopped;
     private bool _typedAny;
     private bool _disposed;
+    private const int SpeechIgnoreMs = 250;
+    private readonly long _startTick = Environment.TickCount64;
+    private volatile bool _hasSpeech;
     private long _lastSpeechTick = Environment.TickCount64;
+
+    /// <summary>Something has been said since the start of the session (the first moments, where the start tone could be heard, do not count).</summary>
+    public bool HasSpeech => _hasSpeech;
 
     /// <summary><see cref="Environment.TickCount64"/> of the last audio block that was loud enough to count as speech (or of the start).</summary>
     public long LastSpeechTick => Interlocked.Read(ref _lastSpeechTick);
@@ -47,7 +53,11 @@ internal sealed class PushToTalkSession : IDisposable
         _segmenter.PauseMs = settings.PauseMs;
         _segmenter.Level += level =>
         {
-            if (level * SentenceSegmenter.LevelScale >= _segmenter.RmsThreshold) Interlocked.Exchange(ref _lastSpeechTick, Environment.TickCount64);
+            if (level * SentenceSegmenter.LevelScale < _segmenter.RmsThreshold) return;
+            var now = Environment.TickCount64;
+            Interlocked.Exchange(ref _lastSpeechTick, now);
+            // The first moments are ignored: the start tone may be picked up by the microphone.
+            if (now - _startTick > SpeechIgnoreMs) _hasSpeech = true;
         };
         _segmenter.Sentence += pcm =>
         {

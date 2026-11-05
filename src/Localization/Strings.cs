@@ -83,8 +83,10 @@ internal static class Strings
         ["Set.Ptt.Enable"] = ("Hold the keys below and speak: each sentence is typed into the active window at the cursor",
             "Drž klávesy níže a mluv: každá věta se napíše do aktivního okna na pozici kurzoru"),
         ["Set.Ptt.Keys.CtrlShift"] = ("Ctrl + Shift", "Ctrl + Shift"),
-        ["Set.Ptt.Latch"] = ("Latch: after the delay the keys can be released; recording stops when you press them again",
-            "Přepínání: po uplynutí doby můžeš klávesy pustit; nahrávání skončí, až je stiskneš znovu"),
+        ["Set.Ptt.Latch"] = ("Latch: if you let go before saying anything, recording goes on until you press the keys again (or the silence below); " +
+            "if you spoke while holding them, letting go ends it at once",
+            "Přepínání: když klávesy pustíš dřív, než něco řekneš, nahrávání běží, dokud je nestiskneš znovu (nebo než nastane ticho níže); " +
+            "když jsi mluvil při držení, uvolnění ho ukončí hned"),
         ["Set.Ptt.AutoStop"] = ("Latch mode: stop automatically after {0:F0} s without speech", "Přepínání: automaticky ukončit po {0:F0} s bez řeči"),
         ["Set.Ptt.AutoStop.Off"] = ("Latch mode: do not stop automatically (0 s)", "Přepínání: automaticky neukončovat (0 s)"),
         ["Set.Ptt.Sounds"] = ("Play a short quiet tone when recording starts and ends", "Přehrát krátký tichý tón při začátku a konci nahrávání"),

@@ -78,6 +78,7 @@ public partial class App : Application
         _pushToTalkHook.Engaged += StartPushToTalk;
         // The hook callback must return quickly, so ending the recording is left to the dispatcher.
         _pushToTalkHook.Released += () => Dispatcher.BeginInvoke(StopPushToTalk);
+        _pushToTalkHook.Latched += () => Dispatcher.BeginInvoke(OnPushToTalkLatched);
         AutoStopTimer.Tick += (_, _) => CheckAutoStop();
 
         Transcriber.StateChanged += () => Dispatcher.BeginInvoke(RefreshTray);
@@ -232,6 +233,18 @@ public partial class App : Application
         AutoStopTimer.Start();
         _tray?.SetRecording(true);
         if (Settings.PushToTalkSounds) PushToTalkSounds.PlayStart();
+    }
+
+    /// <summary>
+    /// Latch mode: the keys were let go. If something was said while they were held, they were used as a plain hold and releasing ends the
+    /// recording at once; the latched recording (with the automatic stop after silence) is only for keys let go before speaking.
+    /// </summary>
+    private static void OnPushToTalkLatched()
+    {
+        var session = _pushToTalk;
+        if (session is not { HasSpeech: true } || _pushToTalkHook is not { IsLatched: true }) return;
+        _pushToTalkHook.EndLatch();
+        StopPushToTalk();
     }
 
     /// <summary>Latch mode: ends the recording once nobody has spoken for the configured time after the keys were let go.</summary>
