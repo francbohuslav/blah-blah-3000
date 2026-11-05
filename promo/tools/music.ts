@@ -7,7 +7,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { NARRATION } from "../src/narration.ts";
+import { NARRATION, startOf } from "../src/narration.ts";
 
 const SR = 44100;
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -353,8 +353,8 @@ function voiceTrack(seconds: number): Float32Array {
   const out = new Float32Array(Math.floor(seconds * SR));
   for (const line of NARRATION) {
     const samples = readWav(join(ROOT, "public", "narration", `${line.id}.wav`));
-    if (line.at + samples.length / SR > seconds) continue;
-    const i0 = Math.floor(line.at * SR);
+    if (startOf(line) + samples.length / SR > seconds) continue;
+    const i0 = Math.floor(startOf(line) * SR);
     for (let i = 0; i < samples.length; i++) out[i0 + i] += samples[i];
   }
   return out;

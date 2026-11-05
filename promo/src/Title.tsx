@@ -10,8 +10,8 @@ export const Title: React.FC = () => {
   const f = frame / fps;
   const logo = spring({ frame, fps, config: { damping: 12 } });
   const text = interpolate(f, [0.5, 1.2], [0, 1], clamp);
-  const tag = interpolate(f, [1.1, 1.8], [0, 1], clamp);
-  const out = interpolate(f, [2.7, T.titleEnd], [1, 0], clamp);
+  const tag = interpolate(f, [3.4, 4.0], [0, 1], clamp);
+  const out = interpolate(f, [T.titleEnd - 0.5, T.titleEnd], [1, 0], clamp);
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", opacity: out, background: C.page }}>
       <Img src={staticFile("icon.svg")} style={{ width: 260, height: 260, transform: `scale(${logo})` }} />

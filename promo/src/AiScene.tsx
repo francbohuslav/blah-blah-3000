@@ -4,6 +4,7 @@ import { Caption } from "./Caption";
 import { Keycap } from "./Keycap";
 import { SettingsMock } from "./SettingsMock";
 import { C, FONT, ICON_FONT } from "./theme";
+import { sceneDuration } from "./schedule";
 import { clamp, Fade } from "./util";
 
 const BEFORE =
@@ -12,7 +13,7 @@ const AFTER =
   "Hi Tom, I wanted to tell you that the marketing team meeting has moved to Friday at 10. Can you please tell Sarah about it? Thanks a lot.";
 
 // Times (seconds) of this scene.
-const A = { keys: 2.3, correcting: 2.6, done: 4.2, back: 8.4, window: 10.0 };
+const A = { keys: 3.6, correcting: 4.4, done: 6.5, back: 13.5, window: 14.8 };
 
 const IconButton: React.FC<{ glyph: string; color: string; opacity?: number; hover?: boolean }> = ({ glyph, color, opacity = 1, hover }) => (
   <div
@@ -36,7 +37,7 @@ const IconButton: React.FC<{ glyph: string; color: string; opacity?: number; hov
 
 // The dictation window with the text correction button (a copy of the real window, see src/MainWindow.xaml).
 const AiWindow: React.FC<{ f: number; level: number }> = ({ f, level }) => {
-  const mix = interpolate(f, [A.done, A.done + 0.4, A.back - 0.4, A.back], [0, 1, 1, 0], clamp);
+  const mix = interpolate(f, [A.done, A.done + 0.2, A.back - 0.2, A.back], [0, 1, 1, 0], clamp);
   let ai = "";
   let aiColor = C.level;
   if (f < A.correcting) {
@@ -94,7 +95,7 @@ export const AiScene: React.FC = () => {
   const f = frame / fps;
   const pop = spring({ frame: Math.round((f - 0.1) * fps), fps, config: { damping: 14, stiffness: 160 } });
   const windowOut = interpolate(f, [A.window - 0.3, A.window + 0.1], [1, 0], clamp);
-  const settingsIn = interpolate(f, [A.window + 0.2, A.window + 0.7, 17.0, 17.5], [0, 1, 1, 0], clamp);
+  const settingsIn = interpolate(f, [A.window + 0.2, A.window + 0.7, 23.0, 23.5], [0, 1, 1, 0], clamp);
   return (
     <AbsoluteFill style={{ background: `radial-gradient(circle at 50% 40%, #202226, ${C.page})` }}>
       <div
@@ -121,14 +122,14 @@ export const AiScene: React.FC = () => {
         </div>
       </div>
 
-      <Caption text="Dictated text has the odd slip." from={0.4} to={2.2} />
-      <Caption text="Ctrl+K: fix it with AI." from={2.4} to={4.2} />
-      <Caption text="Fillers gone. Mistakes fixed. You check the result." from={4.4} to={7.9} />
-      <Caption text="Don't like it? One click back." from={8.0} to={9.8} />
-      <Caption text="Bring your own key: OpenAI, Groq, Gemini, xAI…" from={10.6} to={13.9} />
-      <Caption text="Or a local model. Only the text is sent." from={14.1} to={17.2} />
+      <Caption text="Dictated text has the odd slip." from={0.4} to={2.8} />
+      <Caption text="Ctrl+K: fix it with AI." from={3.4} to={6.0} />
+      <Caption text="Fillers gone. Mistakes fixed. You check the result." from={6.8} to={10.8} />
+      <Caption text="Don't like it? One click back." from={12.0} to={14.4} />
+      <Caption text="Bring your own key: OpenAI, Groq, Gemini, xAI…" from={15.4} to={19.0} />
+      <Caption text="Or a local model. Only the text is sent." from={20.1} to={23.3} />
     </AbsoluteFill>
   );
 };
 
-export const AI_DURATION = 17.6;
+export const AI_DURATION = sceneDuration("ai");

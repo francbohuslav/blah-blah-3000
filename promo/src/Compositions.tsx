@@ -2,12 +2,13 @@ import React from "react";
 import { Audio, Sequence, staticFile } from "remotion";
 import { AI_DURATION, AiScene } from "./AiScene";
 import { LATCH_DURATION, LatchScene, PTT_DURATION, PttScene } from "./ChatScene";
-import { Classic, CLASSIC_END, CLASSIC_START } from "./Classic";
+import { Classic } from "./Classic";
 import { Montage, MONTAGE_DURATION } from "./Montage";
 import { MUSIC } from "./music";
-import { NARRATION } from "./narration";
+import { NARRATION, startOf } from "./narration";
 import { Outro } from "./Outro";
-import { sec, T } from "./timeline";
+import { CLASSIC_END, CLASSIC_START, sceneDuration } from "./schedule";
+import { sec } from "./timeline";
 import { Title } from "./Title";
 import { SceneFade } from "./util";
 
@@ -41,9 +42,9 @@ const Timeline: React.FC<{ parts: Part[] }> = ({ parts }) => {
   );
 };
 
-const OUTRO_DURATION = 7;
+const OUTRO_DURATION = sceneDuration("outro");
 const FADE: [number, number] = [0.4, 0.4];
-const title: Part = { duration: T.titleEnd, node: <Title /> };
+const title: Part = { duration: sceneDuration("title"), node: <Title /> };
 const classic: Part = { duration: CLASSIC_END - CLASSIC_START, start: CLASSIC_START, node: <Classic />, fade: FADE };
 const outro = (duration: number): Part => ({ duration, node: <Outro />, fade: [0.5, 0.7] });
 
@@ -66,7 +67,7 @@ export const LONG_DURATION = total(LONG);
 const Narration: React.FC = () => (
   <>
     {NARRATION.map((line) => (
-      <Sequence key={line.id} from={sec(line.at)}>
+      <Sequence key={line.id} from={sec(startOf(line))}>
         <Audio src={staticFile(`narration/${line.id}.wav`)} />
       </Sequence>
     ))}

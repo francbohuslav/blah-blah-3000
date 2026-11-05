@@ -40,7 +40,7 @@ export const Classic: React.FC = () => {
         </div>
       </Fade>
 
-      <Fade times={[T.recordingStart + 0.4, T.recordingStart + 0.8, 19.4, 19.9]} style={{ left: 0, right: 0, top: 230, display: "flex", justifyContent: "center" }}>
+      <Fade times={[T.recordingStart + 0.4, T.recordingStart + 0.8, T.replaceAt - 0.3, T.replaceAt + 0.2]} style={{ left: 0, right: 0, top: 230, display: "flex", justifyContent: "center" }}>
         <Waveform amplitude={speaking ? level : 0.05} />
       </Fade>
 
@@ -62,13 +62,9 @@ export const Classic: React.FC = () => {
 
       <Caption text="Typing is slow." from={3.4} to={6.8} />
       <Caption text="Press a shortcut." from={7.2} to={9.4} />
-      <Caption text="Speak. Text appears sentence by sentence." from={11.2} to={19.4} />
-      <Caption text="Your own replacements." from={20.0} to={22.0} />
-      <Caption text="Press Enter. It lands where you were typing." from={22.6} to={27.2} />
+      <Caption text="Speak. Text appears sentence by sentence." from={11.2} to={16.6} />
+      <Caption text="Press Enter. It lands where you were typing." from={17.4} to={22.8} />
     </AbsoluteFill>
   );
 };
 
-// The part of the original timeline that is used: from just before the mail window appears to the end of the pasted text.
-export const CLASSIC_START = 2.2;
-export const CLASSIC_END = 27.4;

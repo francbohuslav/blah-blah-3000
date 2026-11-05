@@ -6,6 +6,7 @@ import { Keycap } from "./Keycap";
 import { C } from "./theme";
 import { TrayLens } from "./TrayLens";
 import { Waveform } from "./Waveform";
+import { sceneDuration } from "./schedule";
 import { Fade, Seg, speechLevel, typedText } from "./util";
 
 interface ChatSceneConfig {
@@ -97,7 +98,7 @@ export const PttScene: React.FC = () => (
   />
 );
 
-export const PTT_DURATION = 21;
+export const PTT_DURATION = sceneDuration("ptt");
 
 // Latch mode: hold briefly, let go, speak; the recording stops by itself after a few seconds of silence.
 export const LATCH_SEGS: Seg[] = [{ text: "It is twelve Harbour Street, second floor.", speak: [3.2, 5.6], shown: 6.2 }];
@@ -124,4 +125,4 @@ export const LatchScene: React.FC = () => (
   />
 );
 
-export const LATCH_DURATION = 10.8;
+export const LATCH_DURATION = sceneDuration("latch");

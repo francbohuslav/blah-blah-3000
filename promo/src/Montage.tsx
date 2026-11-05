@@ -3,9 +3,10 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { Caption } from "./Caption";
 import { SettingsMock } from "./SettingsMock";
 import { C, FONT } from "./theme";
+import { sceneDuration } from "./schedule";
 import { Fade } from "./util";
 
-const CARD = 3.4;
+const CARD = 5;
 
 const Panel: React.FC<{ title: string; children: React.ReactNode; width?: number }> = ({ title, children, width = 1100 }) => (
   <div
@@ -99,4 +100,4 @@ export const Montage: React.FC = () => {
   );
 };
 
-export const MONTAGE_DURATION = 3 * CARD;
+export const MONTAGE_DURATION = sceneDuration("montage");

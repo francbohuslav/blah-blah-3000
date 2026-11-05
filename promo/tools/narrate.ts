@@ -10,12 +10,14 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { NARRATION, VOICE } from "../src/narration.ts";
+import { NARRATION, startOf, VOICE } from "../src/narration.ts";
+import { TOTAL_DURATION } from "../src/schedule.ts";
 
 const API = "http://127.0.0.1:3900";
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "narration");
 const args = process.argv.slice(2);
 const force = args.includes("--force");
+const MIN_GAP = 1.0; // seconds of silence between two lines: the viewer needs time to take in the picture
 const check = args.includes("--check");
 const only = args.includes("--only") ? new Set(args[args.indexOf("--only") + 1].split(",")) : null;
 
@@ -91,13 +93,14 @@ let problems = 0;
 NARRATION.forEach((line, i) => {
   const length = lengths.get(line.id);
   if (length === undefined) return;
-  const next = NARRATION[i + 1]?.at;
-  const end = line.at + length;
+  const start = startOf(line);
+  const next = NARRATION[i + 1] ? startOf(NARRATION[i + 1]) : undefined;
+  const end = start + length;
   const gap = next === undefined ? Infinity : next - end;
-  if (gap < 0.15) problems++;
+  if (gap < MIN_GAP) problems++;
   console.log(
-    line.id.padEnd(19) + line.at.toFixed(1).padStart(8) + length.toFixed(2).padStart(8) + end.toFixed(1).padStart(8) +
-      (next === undefined ? "-" : next.toFixed(1)).padStart(9) + (gap === Infinity ? "" : `  ${gap.toFixed(2)}${gap < 0.15 ? "  <-- too tight" : ""}`),
+    line.id.padEnd(19) + start.toFixed(1).padStart(8) + length.toFixed(2).padStart(8) + end.toFixed(1).padStart(8) +
+      (next === undefined ? "-" : next.toFixed(1)).padStart(9) + (gap === Infinity ? "" : `  ${gap.toFixed(2)}${gap < MIN_GAP ? "  <-- too tight" : ""}`),
   );
 });
 if (problems > 0) console.log(`\n${problems} line(s) end too close to the next one: shorten the text or set "speed" in src/narration.ts.`);
