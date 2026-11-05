@@ -70,7 +70,7 @@
       <RichTextBox x:Name="Transcript" Grid.Row="1" Background="#2b2c2f" Foreground="#e8eaed" CaretBrush="#e8eaed"
                    SelectionBrush="#5f6368" BorderThickness="0" Padding="6" FontSize="18"
                    AcceptsReturn="False" VerticalScrollBarVisibility="Auto" IsDocumentEnabled="True"
-                   IsInactiveSelectionHighlightEnabled="True" SelectionChanged="OnTranscriptSelectionChanged">
+                   IsInactiveSelectionHighlightEnabled="True" SelectionChanged="OnTranscriptSelectionChanged" TextChanged="OnTranscriptTextChanged">
         <RichTextBox.Resources>
           <Style TargetType="Paragraph">
             <Setter Property="Margin" Value="0" />

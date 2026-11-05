@@ -404,15 +404,23 @@ public partial class MainWindow : Window
 
     private void OnFixClick(object sender, RoutedEventArgs e) => _ = FixTextAsync();
 
+    private void OnTranscriptTextChanged(object sender, TextChangedEventArgs e) => UpdateFixButton();
+
+    /// <summary>There is nothing to correct in an empty window, and only one correction runs at a time.</summary>
+    private void UpdateFixButton()
+    {
+        if (FixButton != null) FixButton.IsEnabled = !_fixing && TranscriptText().Length > 0;
+    }
+
     /// <summary>
     /// Sends the whole text to the AI and shows the corrected text in the window, where it can be checked and edited; the original is kept
     /// so the user can go back. Recording is paused meanwhile, and Esc cancels.
     /// </summary>
     private async Task FixTextAsync()
     {
-        if (_fixing || _finishing || !_settings.LlmEnabled) return;
+        if (_fixing || _finishing || !_settings.LlmEnabled || TranscriptText().Length == 0) return;
         _fixing = true;
-        FixButton.IsEnabled = false;
+        UpdateFixButton();
         _fixCts = new CancellationTokenSource();
         var token = _fixCts.Token;
         // What is being said now would arrive after the correction and be mixed up with it.
@@ -454,7 +462,7 @@ public partial class MainWindow : Window
         {
             _paused = false;
             _fixing = false;
-            FixButton.IsEnabled = true;
+            UpdateFixButton();
             _fixCts.Dispose();
             _fixCts = null;
             Transcript.Focus();

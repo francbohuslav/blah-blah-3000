@@ -91,11 +91,11 @@
             <Button Content="{local:Loc Set.Llm.Prompt.Reset}" DockPanel.Dock="Right" Padding="10,3" Click="OnLlmPromptReset" />
             <TextBlock Text="{local:Loc Set.Llm.Prompt}" FontWeight="SemiBold" VerticalAlignment="Center" />
           </DockPanel>
-          <TextBox x:Name="LlmPromptBox" Margin="0,6,0,0" Height="130" TextWrapping="Wrap" AcceptsReturn="True"
+          <TextBox x:Name="LlmPromptBox" Margin="0,6,0,0" Height="92" TextWrapping="Wrap" AcceptsReturn="True"
                    VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" />
           <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Llm.Prompt.Hint}" />
 
-          <CheckBox x:Name="LlmAutoCheck" Margin="0,14,0,0" Content="{local:Loc Set.Llm.Auto}" />
+          <CheckBox x:Name="LlmAutoCheck" Margin="0,10,0,0" Content="{local:Loc Set.Llm.Auto}" />
         </StackPanel>
         </ScrollViewer>
       </TabItem>
