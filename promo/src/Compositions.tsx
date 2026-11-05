@@ -4,6 +4,7 @@ import { AI_DURATION, AiScene } from "./AiScene";
 import { LATCH_DURATION, LatchScene, PTT_DURATION, PttScene } from "./ChatScene";
 import { Classic, CLASSIC_END, CLASSIC_START } from "./Classic";
 import { Montage, MONTAGE_DURATION } from "./Montage";
+import { MUSIC } from "./music";
 import { NARRATION } from "./narration";
 import { Outro } from "./Outro";
 import { sec, T } from "./timeline";
@@ -76,5 +77,6 @@ export const PromoLong: React.FC = () => (
   <>
     <Timeline parts={LONG} />
     <Narration />
+    <Audio src={staticFile(MUSIC.file)} volume={MUSIC.volume} />
   </>
 );
