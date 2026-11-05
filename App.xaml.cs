@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using BlahBlah3000.Api;
+using BlahBlah3000.Audio;
 using BlahBlah3000.Dictation;
 using BlahBlah3000.Native;
 using BlahBlah3000.Update;
@@ -27,6 +28,8 @@ public partial class App : Application
     private static bool _hotkeyFailed;
     private static KeyboardHook? _pushToTalkHook;
     private static PushToTalkSession? _pushToTalk;
+    private static readonly DispatcherTimer AutoStopTimer = new() { Interval = TimeSpan.FromMilliseconds(250) };
+    private static long _latchedSince;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -75,6 +78,7 @@ public partial class App : Application
         _pushToTalkHook.Engaged += StartPushToTalk;
         // The hook callback must return quickly, so ending the recording is left to the dispatcher.
         _pushToTalkHook.Released += () => Dispatcher.BeginInvoke(StopPushToTalk);
+        AutoStopTimer.Tick += (_, _) => CheckAutoStop();
 
         Transcriber.StateChanged += () => Dispatcher.BeginInvoke(RefreshTray);
         _idleTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
@@ -224,7 +228,34 @@ public partial class App : Application
             return;
         }
         _pushToTalk = session;
+        _latchedSince = 0;
+        AutoStopTimer.Start();
         _tray?.SetRecording(true);
+        if (Settings.PushToTalkSounds) PushToTalkSounds.PlayStart();
+    }
+
+    /// <summary>Latch mode: ends the recording once nobody has spoken for the configured time after the keys were let go.</summary>
+    private static void CheckAutoStop()
+    {
+        var session = _pushToTalk;
+        if (session == null)
+        {
+            AutoStopTimer.Stop();
+            return;
+        }
+        if (_pushToTalkHook is not { IsLatched: true })
+        {
+            _latchedSince = 0;
+            return;
+        }
+        var now = Environment.TickCount64;
+        // The silence is counted from the moment the keys were let go at the earliest, so a pause for thinking before the first word is allowed.
+        if (_latchedSince == 0) _latchedSince = now;
+        var seconds = Settings.PushToTalkAutoStopSeconds;
+        if (seconds <= 0 || now - Math.Max(session.LastSpeechTick, _latchedSince) < seconds * 1000L) return;
+        Log.Write($"Push to talk stopped after {seconds} s of silence");
+        _pushToTalkHook.EndLatch();
+        StopPushToTalk();
     }
 
     private static async void StopPushToTalk()

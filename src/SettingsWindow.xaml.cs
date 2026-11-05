@@ -50,6 +50,8 @@ public partial class SettingsWindow : Window
         ThresholdSlider.Value = settings.SilenceThreshold;
         PauseSlider.Value = settings.PauseMs;
         PttLatchCheck.IsChecked = settings.PushToTalkLatch;
+        PttSoundsCheck.IsChecked = settings.PushToTalkSounds;
+        PttAutoStopSlider.Value = Math.Clamp(settings.PushToTalkAutoStopSeconds, PttAutoStopSlider.Minimum, PttAutoStopSlider.Maximum);
         PttDelaySlider.Value = Math.Clamp(settings.PushToTalkDelayMs, PttDelaySlider.Minimum, PttDelaySlider.Maximum);
         UpdateLabels();
 
@@ -91,7 +93,8 @@ public partial class SettingsWindow : Window
     private void UpdateLabels()
     {
         // The sliders raise ValueChanged while the window is still being built, before all labels exist.
-        if (ThresholdLabel == null || PauseLabel == null || PttDelayLabel == null) return;
+        if (ThresholdLabel == null || PauseLabel == null || PttDelayLabel == null || PttAutoStopLabel == null) return;
+        PttAutoStopLabel.Text = Loc.T(PttAutoStopSlider.Value == 0 ? "Set.Ptt.AutoStop.Off" : "Set.Ptt.AutoStop", PttAutoStopSlider.Value);
         ThresholdLabel.Text = Loc.T("Set.Threshold", ThresholdSlider.Value);
         PauseLabel.Text = Loc.T("Set.Pause", PauseSlider.Value);
         PttDelayLabel.Text = Loc.T("Set.Ptt.Delay", PttDelaySlider.Value);
@@ -170,6 +173,8 @@ public partial class SettingsWindow : Window
         _settings.PushToTalkKeys = PttKeysCombo.SelectedValue as string ?? "Ctrl+Shift";
         _settings.PushToTalkDelayMs = (int)PttDelaySlider.Value;
         _settings.PushToTalkLatch = PttLatchCheck.IsChecked == true;
+        _settings.PushToTalkSounds = PttSoundsCheck.IsChecked == true;
+        _settings.PushToTalkAutoStopSeconds = (int)PttAutoStopSlider.Value;
         _settings.Autostart = AutostartCheck.IsChecked == true;
         _settings.CheckForUpdates = UpdatesCheck.IsChecked == true;
         _settings.ApiEnabled = ApiCheck.IsChecked == true;

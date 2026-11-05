@@ -32,6 +32,10 @@ internal sealed class PushToTalkSession : IDisposable
     private bool _stopped;
     private bool _typedAny;
     private bool _disposed;
+    private long _lastSpeechTick = Environment.TickCount64;
+
+    /// <summary><see cref="Environment.TickCount64"/> of the last audio block that was loud enough to count as speech (or of the start).</summary>
+    public long LastSpeechTick => Interlocked.Read(ref _lastSpeechTick);
 
     public PushToTalkSession(Settings settings, Action<string> onError)
     {
@@ -41,6 +45,10 @@ internal sealed class PushToTalkSession : IDisposable
         _debug = new DebugDump(settings.DebugRecording, "push-to-talk-");
         _segmenter.RmsThreshold = settings.SilenceThreshold;
         _segmenter.PauseMs = settings.PauseMs;
+        _segmenter.Level += level =>
+        {
+            if (level * SentenceSegmenter.LevelScale >= _segmenter.RmsThreshold) Interlocked.Exchange(ref _lastSpeechTick, Environment.TickCount64);
+        };
         _segmenter.Sentence += pcm =>
         {
             _debug.LogSentence(pcm);
@@ -72,6 +80,8 @@ internal sealed class PushToTalkSession : IDisposable
     {
         await Task.Delay(ReleaseTailMs);
         _recorder.Stop();
+        // Only now, so the tone is not picked up by the microphone.
+        if (_settings.PushToTalkSounds) PushToTalkSounds.PlayStop();
         lock (_audioLock)
         {
             _segmenter.Flush();

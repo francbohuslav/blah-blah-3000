@@ -61,6 +61,15 @@ internal sealed class KeyboardHook : IDisposable
     /// <summary>See the <c>latch</c> parameter of <see cref="Enable"/>.</summary>
     public bool Latch { get; private set; }
 
+    /// <summary>The keys were let go and the recording goes on until they are pressed again.</summary>
+    public bool IsLatched => _latched;
+
+    /// <summary>
+    /// Leaves the latched state without raising <see cref="Released"/> (the caller ends the recording itself, e.g. after a silence),
+    /// so the next press of the keys starts a new recording instead of being taken as a stop.
+    /// </summary>
+    public void EndLatch() => _latched = false;
+
     /// <summary>The combination has been held for the hold delay without any other key.</summary>
     public event Action? Engaged;
 
