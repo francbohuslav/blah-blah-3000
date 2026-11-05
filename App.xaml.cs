@@ -48,6 +48,7 @@ public partial class App : Application
         }
 
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        Log.StartNewSession();
         LegacyMigration.Run();
         Log.Write("=== start ===");
         VolumeDucker.RecoverAfterCrash();
