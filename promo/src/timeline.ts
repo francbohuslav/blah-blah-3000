@@ -1,5 +1,5 @@
 export const FPS = 30;
-export const DURATION_S = 30;
+export const DURATION_S = 32.5;
 export const sec = (s: number) => Math.round(s * FPS);
 
 export interface Segment {
@@ -32,7 +32,7 @@ export const T = {
   windowHide: 22.7,
   pasteStart: 22.9,
   pasteEnd: 24.9,
-  outroStart: 25.4,
+  outroStart: 27.6,
 };
 
 export const FULL_TEXT =

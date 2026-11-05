@@ -77,9 +77,22 @@ export const MailApp: React.FC = () => {
           color: C.text,
         }}
       >
+        {/* A placeholder is not real text, so the caret sits before it */}
+        {typed.length === 0 && (
+          <span
+            style={{
+              borderLeft: `3px solid ${caretOn && focused ? C.text : "transparent"}`,
+              marginRight: -3,
+            }}
+          >
+            &#8203;
+          </span>
+        )}
         {typed.length === 0 && <span style={{ color: "#6f7378" }}>Write your message…</span>}
         {typed}
-        {caretOn && focused && <span style={{ borderLeft: `3px solid ${C.text}`, marginLeft: 2 }}>&#8203;</span>}
+        {typed.length > 0 && caretOn && focused && (
+          <span style={{ borderLeft: `3px solid ${C.text}`, marginLeft: 2 }}>&#8203;</span>
+        )}
       </div>
     </div>
   );
