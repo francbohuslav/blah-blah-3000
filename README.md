@@ -20,7 +20,7 @@ https://github.com/user-attachments/assets/528f03be-0424-4e83-8a71-72e19865091d
 
 Get the Windows installer (`BlahBlah3000-Setup-X.Y.Z.exe`) from the
 [latest release](https://github.com/francbohuslav/blah-blah-3000/releases/latest). It installs for the current user, no administrator
-rights needed. You also need the [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0).
+rights needed, and nothing else has to be installed (the .NET runtime is part of the application).
 
 ## Features
 
@@ -49,7 +49,7 @@ rights needed. You also need the [.NET 10 Desktop Runtime](https://dotnet.micros
 ## Requirements
 
 - Windows 10 or 11, x64
-- [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
+- To build from source: the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - A microphone. A Vulkan-capable GPU is recommended; without one Whisper falls back to the CPU and is slower.
 - About 900 MB of disk space for the model and about 1 GB of RAM/VRAM while it is loaded.
 
@@ -80,7 +80,7 @@ To publish a version: bump `<Version>` in `BlahBlah3000.csproj`, create a GitHub
 
 `build-installer.cmd` publishes the app and builds a Windows installer with [Inno Setup 6](https://jrsoftware.org/isinfo.php)
 into `installer\output`. The installer works without administrator rights (per-user install), offers a desktop shortcut,
-checks for the .NET 10 Desktop Runtime and, on uninstall, can also remove the settings and the downloaded model.
+includes the .NET runtime (the application is self-contained) and, on uninstall, can also remove the settings and the downloaded model.
 The version comes from `<Version>` in `BlahBlah3000.csproj`.
 
 ## The Whisper model

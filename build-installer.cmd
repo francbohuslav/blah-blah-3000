@@ -3,7 +3,7 @@ rem Publishes BlahBlah3000 to installer\staging and builds the Inno Setup instal
 cd /d "%~dp0"
 
 if exist installer\staging rmdir /s /q installer\staging
-dotnet publish BlahBlah3000.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o installer\staging -v quiet -nologo
+dotnet publish BlahBlah3000.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o installer\staging -v quiet -nologo
 if errorlevel 1 goto failed
 
 rem Whisper.net ships native libraries for every platform; the Linux ones are useless in a Windows installer.
