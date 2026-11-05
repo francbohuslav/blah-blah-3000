@@ -56,21 +56,8 @@ const LONG: Part[] = [
   outro(OUTRO_DURATION),
 ];
 
-// The short version: the classic dictation plus a taste of push to talk and of the AI correction.
-const PTT_TASTE: [number, number] = [3.6, 11.4];
-const AI_TASTE: [number, number] = [1.2, 7.4];
-const SHORT: Part[] = [
-  title,
-  classic,
-  { duration: PTT_TASTE[1] - PTT_TASTE[0], start: PTT_TASTE[0], node: <PttScene />, fade: FADE },
-  { duration: AI_TASTE[1] - AI_TASTE[0], start: AI_TASTE[0], node: <AiScene />, fade: FADE },
-  outro(5),
-];
-
 const total = (parts: Part[]) => parts.reduce((sum, p) => sum + p.duration, 0);
 
 export const LONG_DURATION = total(LONG);
-export const SHORT_DURATION = total(SHORT);
 
 export const PromoLong: React.FC = () => <Timeline parts={LONG} />;
-export const PromoShort: React.FC = () => <Timeline parts={SHORT} />;
