@@ -2,13 +2,19 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, FONT } from "./theme";
 
-// A keyboard key that is pressed at `pressAt` seconds.
-export const Keycap: React.FC<{ label: string; pressAt: number; wide?: boolean }> = ({ label, pressAt, wide }) => {
+// A keyboard key that is pressed at `pressAt` seconds and, when `releaseAt` is given, let go again.
+export const Keycap: React.FC<{ label: string; pressAt: number; releaseAt?: number; wide?: boolean }> = ({ label, pressAt, releaseAt, wide }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame - pressAt * fps;
   const press = spring({ frame: t, fps, config: { damping: 14, stiffness: 260 } });
-  const down = t >= 0 ? press : 0;
+  let down = t >= 0 ? press : 0;
+  if (releaseAt !== undefined) {
+    const r = frame - releaseAt * fps;
+    if (r >= 0) {
+      down = Math.max(0, Math.min(1, 1 - spring({ frame: r, fps, config: { damping: 14, stiffness: 260 } })));
+    }
+  }
   const glow = interpolate(down, [0, 1], [0, 1]);
   return (
     <div

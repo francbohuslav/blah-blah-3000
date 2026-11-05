@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts Promo out/blahblah3000-promo.mp4 --muted",
-    "still": "remotion still src/index.ts Promo"
+    "render": "remotion render src/index.ts PromoLong out/blahblah3000-tour.mp4 --muted",
+    "render:short": "remotion render src/index.ts PromoShort out/blahblah3000-promo-short.mp4 --muted",
+    "still": "remotion still src/index.ts PromoLong"
   },
   "dependencies": {
     "@remotion/cli": "4.0.250",
