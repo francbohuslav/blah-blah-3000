@@ -5,6 +5,7 @@
   "scripts": {
     "studio": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts PromoLong out/blahblah3000-tour.mp4 --audio-bitrate=128k",
+    "screenshot": "remotion still src/index.ts Screenshot ../docs/screenshot.png --frame=528",
     "still": "remotion still src/index.ts PromoLong"
   },
   "dependencies": {

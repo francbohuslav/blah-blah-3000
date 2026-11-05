@@ -3,6 +3,7 @@ import { Audio, Sequence, staticFile } from "remotion";
 import { AI_DURATION, AiScene } from "./AiScene";
 import { LATCH_DURATION, LatchScene, PTT_DURATION, PttScene } from "./ChatScene";
 import { Classic } from "./Classic";
+import { DictationWindow } from "./DictationWindow";
 import { Montage, MONTAGE_DURATION } from "./Montage";
 import { MUSIC } from "./music";
 import { NARRATION, startOf } from "./narration";
@@ -81,3 +82,6 @@ export const PromoLong: React.FC = () => (
     <Audio src={staticFile(MUSIC.file)} volume={MUSIC.volume} />
   </>
 );
+
+// The dictation window alone, 1:1, for the screenshot in the README (render the frame 528: both sentences are there and the replacement is done).
+export const Screenshot: React.FC = () => <DictationWindow speaking={false} level={0.03} />;

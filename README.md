@@ -103,7 +103,7 @@ consent, and the download can be cancelled at any time. You can also place the f
 | Esc | Cancel |
 
 Settings (tray menu → Settings, or the gear icon in the dictation window) cover the interface and transcription language,
-the shortcut, autostart, the REST API, the microphone and its sensitivity, the Whisper hint and the replacements.
+the shortcut and push to talk, autostart, the AI text correction, the REST API, the microphone and its sensitivity, the Whisper hint and the replacements.
 
 ## REST API
 
