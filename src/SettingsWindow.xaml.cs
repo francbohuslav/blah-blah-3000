@@ -76,6 +76,7 @@ public partial class SettingsWindow : Window
         LlmKeyBox.Password = settings.LlmApiKey;
         LlmPromptBox.Text = LlmClient.EffectivePrompt(settings);
         LlmAutoCheck.IsChecked = settings.LlmAutoFix;
+        LlmPttCheck.IsChecked = settings.LlmPushToTalk;
         _initializing = false;
 
         _recorder.Data += OnMicData;
@@ -253,6 +254,7 @@ public partial class SettingsWindow : Window
         _settings.LlmModel = LlmModelBox.Text.Trim();
         _settings.LlmApiKey = LlmKeyBox.Password;
         _settings.LlmAutoFix = LlmAutoCheck.IsChecked == true;
+        _settings.LlmPushToTalk = LlmPttCheck.IsChecked == true;
         // The built-in text is not stored: it keeps following the interface language until the user changes it.
         _settings.LlmPrompt = LlmClient.IsDefaultPrompt(LlmPromptBox.Text) ? "" : LlmPromptBox.Text.Trim();
         _settings.Microphone = (MicCombo.SelectedItem as Audio.MicOption)?.Name;

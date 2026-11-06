@@ -96,6 +96,7 @@
           <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Llm.Prompt.Hint}" />
 
           <CheckBox x:Name="LlmAutoCheck" Margin="0,10,0,0" Content="{local:Loc Set.Llm.Auto}" />
+          <CheckBox x:Name="LlmPttCheck" Margin="0,6,0,0" IsEnabled="{Binding IsChecked, ElementName=LlmCheck}" Content="{local:Loc Set.Llm.Ptt}" />
         </StackPanel>
         </ScrollViewer>
       </TabItem>

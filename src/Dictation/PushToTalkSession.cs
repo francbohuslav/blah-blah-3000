@@ -121,6 +121,7 @@ internal sealed class PushToTalkSession : IDisposable
                 Log.Write($"Push to talk transcript ({started.ElapsedMilliseconds} ms): \"{text}\"");
                 _debug.LogTranscript(transcript, text);
                 if (text.Length == 0) continue;
+                if (_settings.LlmEnabled && _settings.LlmPushToTalk) text = await CorrectAsync(text);
                 var typed = Win32.TypeText(_typedAny ? " " + text : text);
                 Log.Write($"Push to talk typed: {typed}");
                 _typedAny = true;
@@ -134,6 +135,23 @@ internal sealed class PushToTalkSession : IDisposable
                 Log.Write($"Push to talk error: {ex}");
                 _onError(ex.Message);
             }
+        }
+    }
+
+    /// <summary>Corrects the sentence with the AI; when that fails, the original text is typed and the error is reported.</summary>
+    private async Task<string> CorrectAsync(string text)
+    {
+        try
+        {
+            var corrected = (await Llm.LlmClient.FixAsync(_settings, text, _cts.Token)).ReplaceLineEndings(" ").Trim();
+            Log.Write($"Push to talk corrected by AI: \"{corrected}\"");
+            return corrected.Length > 0 ? corrected : text;
+        }
+        catch (Llm.LlmException ex)
+        {
+            Log.Write($"Push to talk AI correction failed: {ex.Message}");
+            _onError(ex.Message);
+            return text;
         }
     }
 

@@ -88,6 +88,9 @@ internal sealed class Settings
     /// <summary>Correct the text automatically when Enter is pressed (the result is shown and Enter must be pressed again to paste it).</summary>
     public bool LlmAutoFix { get; set; }
 
+    /// <summary>Also correct every sentence of push to talk with the AI before it is typed (needs <see cref="LlmEnabled"/>; adds the AI's delay to each sentence).</summary>
+    public bool LlmPushToTalk { get; set; }
+
     /// <summary>The API key encrypted for the current Windows user (DPAPI), as Base64; use <see cref="LlmApiKey"/>.</summary>
     public string LlmApiKeyProtected { get; set; } = "";
 

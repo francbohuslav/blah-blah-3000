@@ -125,6 +125,8 @@ internal static class Strings
             "Výchozí text se řídí jazykem rozhraní. Jakmile ho změníš, zůstane tak, jak jsi ho napsal."),
         ["Set.Llm.Auto"] = ("Correct automatically when Enter is pressed (the result is shown first; Enter again pastes it)",
             "Opravit automaticky při Enteru (výsledek se nejdřív ukáže; dalším Enterem se vloží)"),
+        ["Set.Llm.Ptt"] = ("Also correct push to talk sentences (each sentence waits for the AI before it is typed, so typing is delayed)",
+            "Opravovat i věty z push to talk (každá věta čeká na AI, než se napíše, takže psaní se zpozdí)"),
         ["Set.Llm.UrlInvalid"] = ("✗ the address of the AI service is not valid", "✗ adresa služby AI není platná"),
         ["Set.Tab.Activation"] = ("Activation", "Aktivace"),
         ["Set.Tab.Advanced"] = ("Advanced", "Pokročilé"),
