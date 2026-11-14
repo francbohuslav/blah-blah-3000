@@ -121,20 +121,7 @@ public partial class MainWindow : Window
     private void OnAddRuleClick(object sender, RoutedEventArgs e)
     {
         var dialog = new AddReplacementWindow(SelectedText()) { Owner = this };
-        if (dialog.ShowDialog() == true)
-        {
-            var rule = dialog.Rule;
-            var existing = _settings.Replacements.FirstOrDefault(
-                r => string.Equals(r.Pattern, rule.Pattern, StringComparison.OrdinalIgnoreCase));
-            if (existing != null)
-            {
-                existing.Replacement = rule.Replacement;
-                existing.IsRegex = rule.IsRegex;
-            }
-            else _settings.Replacements.Add(rule);
-            _settings.Save();
-            Log.Write($"Replacement added: \"{rule.Pattern}\" → \"{rule.Replacement}\"");
-        }
+        if (dialog.ShowDialog() == true) _settings.AddOrUpdateReplacement(dialog.Rule);
         Activate();
         Transcript.Focus();
     }

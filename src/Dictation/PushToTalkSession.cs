@@ -121,7 +121,9 @@ internal sealed class PushToTalkSession : IDisposable
                 Log.Write($"Push to talk transcript ({started.ElapsedMilliseconds} ms): \"{text}\"");
                 _debug.LogTranscript(transcript, text);
                 if (text.Length == 0) continue;
+                var replaced = text;
                 if (_settings.LlmEnabled && _settings.LlmPushToTalk) text = await CorrectAsync(text);
+                DictationHistory.Add(transcript.ReplaceLineEndings(" ").Trim(), replaced, text);
                 var typed = Win32.TypeText(_typedAny ? " " + text : text);
                 Log.Write($"Push to talk typed: {typed}");
                 _typedAny = true;

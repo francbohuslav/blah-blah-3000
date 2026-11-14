@@ -152,6 +152,20 @@ internal sealed class Settings
         return new Settings();
     }
 
+    /// <summary>Adds the replacement, or changes the existing one with the same pattern (case-insensitive), and saves the settings.</summary>
+    public void AddOrUpdateReplacement(ReplacementRule rule)
+    {
+        var existing = Replacements.FirstOrDefault(r => string.Equals(r.Pattern, rule.Pattern, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+        {
+            existing.Replacement = rule.Replacement;
+            existing.IsRegex = rule.IsRegex;
+        }
+        else Replacements.Add(rule);
+        Save();
+        Log.Write($"Replacement added: \"{rule.Pattern}\" → \"{rule.Replacement}\"");
+    }
+
     public void Save()
     {
         try

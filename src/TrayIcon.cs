@@ -13,6 +13,7 @@ internal sealed class TrayIcon : IDisposable
     private readonly Forms.ToolStripMenuItem _autostart = new() { CheckOnClick = false };
     private readonly Forms.ToolStripMenuItem _dictate = new();
     private readonly Forms.ToolStripMenuItem _settings = new();
+    private readonly Forms.ToolStripMenuItem _history = new();
     private readonly Forms.ToolStripMenuItem _exit = new();
     private readonly Drawing.Icon _normalIcon;
     private readonly Drawing.Icon _recordingIcon;
@@ -21,6 +22,7 @@ internal sealed class TrayIcon : IDisposable
 
     public event Action? Dictate;
     public event Action? OpenSettings;
+    public event Action? OpenHistory;
     public event Action? DownloadModel;
     public event Action? ToggleAutostart;
     public event Action? Exit;
@@ -31,10 +33,11 @@ internal sealed class TrayIcon : IDisposable
         var menu = new Forms.ContextMenuStrip();
         _dictate.Click += (_, _) => Dictate?.Invoke();
         _settings.Click += (_, _) => OpenSettings?.Invoke();
+        _history.Click += (_, _) => OpenHistory?.Invoke();
         _download.Click += (_, _) => DownloadModel?.Invoke();
         _autostart.Click += (_, _) => ToggleAutostart?.Invoke();
         _exit.Click += (_, _) => Exit?.Invoke();
-        menu.Items.AddRange([_dictate, new Forms.ToolStripSeparator(), _state, _download, new Forms.ToolStripSeparator(), _settings, _autostart,
+        menu.Items.AddRange([_dictate, _history, new Forms.ToolStripSeparator(), _state, _download, new Forms.ToolStripSeparator(), _settings, _autostart,
             new Forms.ToolStripSeparator(), _exit]);
         ApplyLanguage();
 
@@ -58,6 +61,7 @@ internal sealed class TrayIcon : IDisposable
     {
         _dictate.Text = Loc.T("Tray.Dictate");
         _settings.Text = Loc.T("Tray.Settings");
+        _history.Text = Loc.T("Tray.History");
         _download.Text = Loc.T("Tray.Download");
         _autostart.Text = Loc.T("Tray.Autostart");
         _exit.Text = Loc.T("Tray.Exit");

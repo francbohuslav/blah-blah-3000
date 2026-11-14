@@ -8,6 +8,7 @@ internal static class Strings
         // Tray icon
         ["Tray.Dictate"] = ("Dictate (to clipboard)", "Diktovat (do schránky)"),
         ["Tray.Settings"] = ("Settings…", "Nastavení…"),
+        ["Tray.History"] = ("Push-to-talk history…", "Historie push to talk…"),
         ["Tray.Download"] = ("Download Whisper model…", "Stáhnout Whisper model…"),
         ["Tray.Autostart"] = ("Start with Windows", "Spouštět s Windows"),
         ["Tray.Exit"] = ("Exit", "Konec"),
@@ -256,9 +257,23 @@ internal static class Strings
         ["AR.Regex"] = ("Regular expression", "Regulární výraz"),
         ["AR.Add"] = ("Add", "Přidat"),
 
+        // Push-to-talk history window
+        ["Hist.Title"] = ("BlahBlah3000 – push-to-talk history", "BlahBlah3000 – historie push to talk"),
+        ["Hist.Hint"] = ("The latest sentences (kept in memory only). Select the wrongly heard part in \"What Whisper heard\" – replacements are applied to that text, before the AI – and add a replacement.",
+            "Poslední věty (jen v paměti). V „Co slyšel Whisper“ označ špatně přepsanou část – náhrady se použijí na tento text, ještě před AI – a přidej náhradu."),
+        ["Hist.Heard"] = ("What Whisper heard", "Co slyšel Whisper"),
+        ["Hist.Replaced"] = ("After replacements (sent to the AI)", "Po náhradách (to dostane AI)"),
+        ["Hist.Typed"] = ("Typed", "Napsáno"),
+        ["Hist.Add"] = ("Add replacement…", "Přidat náhradu…"),
+        ["Hist.Clear"] = ("Clear history", "Smazat historii"),
+
         // Transcriber and model store
         ["LT.Downloading"] = ("The Whisper model is being downloaded.", "Whisper model se právě stahuje."),
         ["LT.DownloadFailed"] = ("Download failed: {0}", "Stahování selhalo: {0}"),
+        ["LT.VcRuntimeMissing"] = ("Microsoft Visual C++ Redistributable (x64) is not installed on this computer (missing: {0}). Whisper needs it. Download and install it, then click \"Try again\" (if it still fails, exit BlahBlah3000 from the tray icon and start it again).",
+            "V tomto počítači chybí Microsoft Visual C++ Redistributable (x64), chybí: {0}. Whisper ho potřebuje. Stáhni a nainstaluj ho a pak klikni na „Zkusit znovu“ (pokud to stále nejde, ukonči BlahBlah3000 v nabídce ikony v liště a spusť ho znovu)."),
+        ["LT.VcDownload"] = ("Download Visual C++ Redistributable", "Stáhnout Visual C++ Redistributable"),
+        ["LT.Retry"] = ("Try again", "Zkusit znovu"),
         ["LT.Missing"] = ("The Whisper model is missing. Download it from the tray icon menu.", "Chybí Whisper model. Stáhni ho v nabídce ikony v liště."),
         ["LT.BadSize"] = ("The downloaded model has an unexpected size.", "Stažený model má jinou velikost, než se čekalo."),
 
@@ -268,7 +283,3 @@ internal static class Strings
         ["Lang.Auto"] = ("Automatic (several languages)", "Automaticky (více jazyků)"),
     };
 }
-        ["LT.VcRuntimeMissing"] = ("Microsoft Visual C++ Redistributable (x64) is not installed on this computer (missing: {0}). Whisper needs it. Download and install it, then click \"Try again\" (if it still fails, exit BlahBlah3000 from the tray icon and start it again).",
-            "V tomto počítači chybí Microsoft Visual C++ Redistributable (x64), chybí: {0}. Whisper ho potřebuje. Stáhni a nainstaluj ho a pak klikni na „Zkusit znovu“ (pokud to stále nejde, ukonči BlahBlah3000 v nabídce ikony v liště a spusť ho znovu)."),
-        ["LT.VcDownload"] = ("Download Visual C++ Redistributable", "Stáhnout Visual C++ Redistributable"),
-        ["LT.Retry"] = ("Try again", "Zkusit znovu"),

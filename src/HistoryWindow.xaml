@@ -1,0 +1,32 @@
+<Window x:Class="BlahBlah3000.HistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:BlahBlah3000"
+        Title="{local:Loc Hist.Title}" Icon="pack://application:,,,/assets/BlahBlah3000.ico" Width="640" Height="560" MinWidth="480" MinHeight="420"
+        WindowStartupLocation="CenterScreen">
+  <Grid Margin="14">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" MinHeight="90" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBlock Grid.Row="0" Text="{local:Loc Hist.Hint}" TextWrapping="Wrap" Margin="0,0,0,8" />
+    <ListBox Grid.Row="1" x:Name="List" DisplayMemberPath="Title" SelectionChanged="OnEntryChanged" />
+    <StackPanel Grid.Row="2" Margin="0,10,0,0">
+      <TextBlock Text="{local:Loc Hist.Heard}" FontWeight="SemiBold" />
+      <TextBox x:Name="HeardBox" IsReadOnly="True" TextWrapping="Wrap" MinLines="2" MaxLines="4" VerticalScrollBarVisibility="Auto"
+               Margin="0,3,0,0" Padding="2,3" SelectionChanged="OnTextSelectionChanged" />
+      <TextBlock Text="{local:Loc Hist.Replaced}" FontWeight="SemiBold" Margin="0,8,0,0" />
+      <TextBox x:Name="ReplacedBox" IsReadOnly="True" TextWrapping="Wrap" MinLines="2" MaxLines="4" VerticalScrollBarVisibility="Auto"
+               Margin="0,3,0,0" Padding="2,3" SelectionChanged="OnTextSelectionChanged" />
+      <TextBlock Text="{local:Loc Hist.Typed}" FontWeight="SemiBold" Margin="0,8,0,0" />
+      <TextBox x:Name="TypedBox" IsReadOnly="True" TextWrapping="Wrap" MinLines="2" MaxLines="4" VerticalScrollBarVisibility="Auto"
+               Margin="0,3,0,0" Padding="2,3" SelectionChanged="OnTextSelectionChanged" />
+    </StackPanel>
+    <DockPanel Grid.Row="3" Margin="0,12,0,0" LastChildFill="False">
+      <Button DockPanel.Dock="Left" x:Name="ClearButton" Content="{local:Loc Hist.Clear}" Padding="12,4" Click="OnClear" />
+      <Button DockPanel.Dock="Right" x:Name="AddButton" Content="{local:Loc Hist.Add}" Padding="12,4" IsEnabled="False" Click="OnAdd" />
+    </DockPanel>
+  </Grid>
+</Window>

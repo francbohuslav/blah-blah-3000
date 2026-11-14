@@ -61,6 +61,7 @@ public partial class App : Application
         _tray = new TrayIcon();
         _tray.Dictate += () => StartSession(IntPtr.Zero);
         _tray.OpenSettings += OpenSettings;
+        _tray.OpenHistory += ShowHistory;
         _tray.DownloadModel += ShowModelDownload;
         _tray.ToggleAutostart += () =>
         {
@@ -166,6 +167,22 @@ public partial class App : Application
         }
         var dialog = new SettingsWindow(Settings) { WindowStartupLocation = WindowStartupLocation.CenterScreen, ShowInTaskbar = true };
         if (dialog.ShowDialog() == true) ApplySettings();
+    }
+
+    private static HistoryWindow? _historyWindow;
+
+    /// <summary>Opens the push-to-talk history (one window; a second request brings it to the front).</summary>
+    internal static void ShowHistory()
+    {
+        if (_historyWindow != null)
+        {
+            if (_historyWindow.WindowState == WindowState.Minimized) _historyWindow.WindowState = WindowState.Normal;
+            _historyWindow.Activate();
+            return;
+        }
+        _historyWindow = new HistoryWindow(Settings);
+        _historyWindow.Closed += (_, _) => _historyWindow = null;
+        _historyWindow.Show();
     }
 
     internal static void ShowModelDownload()
