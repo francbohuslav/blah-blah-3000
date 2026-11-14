@@ -36,6 +36,7 @@ public partial class FirstRunWindow : Window
         ModelBar.Visibility = Visibility.Collapsed;
         ModelError.Visibility = Visibility.Collapsed;
         ModelButton.Visibility = Visibility.Collapsed;
+        VcPanel.Visibility = Visibility.Collapsed;
         ModelText.Foreground = Brushes.Black;
         switch (transcriber.State)
         {
@@ -59,6 +60,7 @@ public partial class FirstRunWindow : Window
             case TranscriberState.Error:
                 ModelText.Text = Loc.T("FR.Model.Error", transcriber.Detail);
                 ModelText.Foreground = Brushes.Firebrick;
+                if (transcriber.VcRuntimeMissing) VcPanel.Visibility = Visibility.Visible;
                 break;
             default:
                 ModelText.Text = Loc.T("FR.Model.OK");
@@ -72,6 +74,10 @@ public partial class FirstRunWindow : Window
         if (App.Transcriber.State == TranscriberState.Downloading) App.Transcriber.CancelDownload();
         else _ = App.Transcriber.DownloadModelAsync();
     }
+
+    private void OnVcDownload(object sender, RoutedEventArgs e) => LocalTranscriber.OpenVcRuntimeDownload();
+
+    private void OnVcRetry(object sender, RoutedEventArgs e) => App.Transcriber.RetryLoad();
 
     private void OnHotkeyKeyDown(object sender, KeyEventArgs e)
     {

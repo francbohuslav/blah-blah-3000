@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text;
 using Whisper.net;
 using Whisper.net.LibraryLoader;
@@ -141,8 +142,64 @@ internal sealed class LocalTranscriber
         {
             Log.Write($"Loading the model failed: {ex}");
             lock (_loadLock) _loading = null;
-            SetState(TranscriberState.Error, ex.Message);
+            var missing = MissingVcRuntimeFiles();
+            VcRuntimeMissing = missing.Count > 0;
+            if (VcRuntimeMissing)
+            {
+                Log.Write($"Missing Visual C++ runtime libraries: {string.Join(", ", missing)}");
+                SetState(TranscriberState.Error, Loc.T("LT.VcRuntimeMissing", string.Join(", ", missing)));
+            }
+            else
+            {
+                LogRuntimeFiles();
+                SetState(TranscriberState.Error, ex.Message);
+            }
             throw;
+        }
+    }
+
+    /// <summary>Download page of the Microsoft Visual C++ Redistributable (x64) that the native Whisper libraries need.</summary>
+    public const string VcRuntimeUrl = "https://aka.ms/vs/17/release/vc_redist.x64.exe";
+
+    /// <summary>True when the last load failed because the Visual C++ runtime is not installed.</summary>
+    public bool VcRuntimeMissing { get; private set; }
+
+    public static void OpenVcRuntimeDownload() =>
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(VcRuntimeUrl) { UseShellExecute = true });
+
+    /// <summary>Tries the load again after a failure (for example once the Visual C++ runtime has been installed).</summary>
+    public void RetryLoad()
+    {
+        if (State != TranscriberState.Error) return;
+        VcRuntimeMissing = false;
+        _ = EnsureLoadedAsync().ContinueWith(_ => { }, TaskScheduler.Default);
+    }
+
+    private static List<string> MissingVcRuntimeFiles()
+    {
+        var missing = new List<string>();
+        foreach (var name in new[] { "vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll" })
+        {
+            if (System.Runtime.InteropServices.NativeLibrary.TryLoad(name, out var handle)) System.Runtime.InteropServices.NativeLibrary.Free(handle);
+            else missing.Add(name);
+        }
+        return missing;
+    }
+
+    /// <summary>Writes the native Whisper libraries found next to the executable, for diagnosing a failed load.</summary>
+    private static void LogRuntimeFiles()
+    {
+        try
+        {
+            var folder = Path.Combine(AppContext.BaseDirectory, "runtimes");
+            var files = Directory.Exists(folder)
+                ? Directory.GetFiles(folder, "*.dll", SearchOption.AllDirectories).Select(f => Path.GetRelativePath(folder, f))
+                : [];
+            Log.Write($"Native libraries in \"{folder}\": {(files.Any() ? string.Join("; ", files) : "none")}");
+        }
+        catch (Exception ex)
+        {
+            Log.Write($"Listing native libraries failed: {ex.Message}");
         }
     }
 

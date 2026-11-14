@@ -138,6 +138,15 @@ public partial class SettingsWindow : Window
             : transcriber.State == TranscriberState.Error
                 ? Loc.T("Set.ModelFailed", transcriber.Detail)
                 : Loc.T("Set.ModelPreparing", transcriber.State, transcriber.Detail);
+        VcPanel.Visibility = transcriber.State == TranscriberState.Error && transcriber.VcRuntimeMissing ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnVcDownload(object sender, RoutedEventArgs e) => LocalTranscriber.OpenVcRuntimeDownload();
+
+    private void OnVcRetry(object sender, RoutedEventArgs e)
+    {
+        App.Transcriber.RetryLoad();
+        ShowModelState();
     }
 
     private void OnHotkeyKeyDown(object sender, KeyEventArgs e)

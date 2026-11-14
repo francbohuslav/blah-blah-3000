@@ -22,6 +22,10 @@
           <ComboBox x:Name="LanguageCombo" Margin="0,6,0,0" DisplayMemberPath="Label" SelectedValuePath="Code" />
           <TextBlock Margin="0,4,0,0" Foreground="Gray" TextWrapping="Wrap" Text="{local:Loc Set.Language.Hint}" />
           <TextBlock x:Name="TestResult" Margin="0,8,0,0" TextWrapping="Wrap" />
+          <StackPanel x:Name="VcPanel" Orientation="Horizontal" Margin="0,8,0,0" Visibility="Collapsed">
+            <Button Padding="12,4" Content="{local:Loc LT.VcDownload}" Click="OnVcDownload" />
+            <Button Padding="12,4" Margin="8,0,0,0" Content="{local:Loc LT.Retry}" Click="OnVcRetry" />
+          </StackPanel>
 
           <CheckBox x:Name="AutostartCheck" Margin="0,16,0,0" Content="{local:Loc Set.Autostart}" />
           <CheckBox x:Name="UpdatesCheck" Margin="0,6,0,0" Content="{local:Loc Set.CheckUpdates}" />

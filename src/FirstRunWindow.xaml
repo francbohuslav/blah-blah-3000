@@ -17,6 +17,10 @@
     <ProgressBar x:Name="ModelBar" Margin="0,8,0,0" Height="12" Maximum="1" Visibility="Collapsed" />
     <TextBlock x:Name="ModelError" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="Firebrick" Visibility="Collapsed" />
     <Button x:Name="ModelButton" Margin="0,8,0,0" HorizontalAlignment="Left" Padding="12,4" Click="OnModelButton" />
+    <StackPanel x:Name="VcPanel" Orientation="Horizontal" Margin="0,8,0,0" Visibility="Collapsed">
+      <Button Padding="12,4" Content="{local:Loc LT.VcDownload}" Click="OnVcDownload" />
+      <Button Padding="12,4" Margin="8,0,0,0" Content="{local:Loc LT.Retry}" Click="OnVcRetry" />
+    </StackPanel>
 
     <TextBlock Text="{local:Loc FR.Step3}" FontWeight="SemiBold" Margin="0,18,0,0" />
     <TextBox x:Name="HotkeyBox" Margin="0,6,0,0" IsReadOnly="True" VerticalContentAlignment="Center" Padding="2,4"

@@ -268,3 +268,7 @@ internal static class Strings
         ["Lang.Auto"] = ("Automatic (several languages)", "Automaticky (více jazyků)"),
     };
 }
+        ["LT.VcRuntimeMissing"] = ("Microsoft Visual C++ Redistributable (x64) is not installed on this computer (missing: {0}). Whisper needs it. Download and install it, then click \"Try again\" (if it still fails, exit BlahBlah3000 from the tray icon and start it again).",
+            "V tomto počítači chybí Microsoft Visual C++ Redistributable (x64), chybí: {0}. Whisper ho potřebuje. Stáhni a nainstaluj ho a pak klikni na „Zkusit znovu“ (pokud to stále nejde, ukonči BlahBlah3000 v nabídce ikony v liště a spusť ho znovu)."),
+        ["LT.VcDownload"] = ("Download Visual C++ Redistributable", "Stáhnout Visual C++ Redistributable"),
+        ["LT.Retry"] = ("Try again", "Zkusit znovu"),
