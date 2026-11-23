@@ -46,6 +46,18 @@ internal sealed class LocalTranscriber
         _ = EnsureLoadedAsync().ContinueWith(_ => { }, TaskScheduler.Default);
     }
 
+    /// <summary>
+    /// Called when the user starts to interact (dictation window opened, push to talk engaged): loads a model that was unloaded for inactivity
+    /// while the first sentence is still being said, and counts as a use so the idle timer does not unload it under the open window.
+    /// A failed load is not retried here (see <see cref="RetryLoad"/>).
+    /// </summary>
+    public void Preload()
+    {
+        _lastUse = DateTime.UtcNow;
+        if (_factory != null || State is TranscriberState.Error or TranscriberState.Downloading) return;
+        Start();
+    }
+
     /// <summary>Starts loading the model (once); repeated calls return the same task. A missing model is an exception.</summary>
     public Task EnsureLoadedAsync()
     {

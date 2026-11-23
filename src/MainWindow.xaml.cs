@@ -77,6 +77,8 @@ public partial class MainWindow : Window
             Transcript.Focus();
             Log.Write($"Window in foreground: {active}");
             Log.Write($"Whisper: built-in, language {_settings.Language}, prompt: \"{_rules.Prompt}\"");
+            // The model may have been unloaded for inactivity; it loads while the first sentence is being said.
+            App.Transcriber.Preload();
             StartRecording();
             ShowTranscriberState();
         };

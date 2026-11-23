@@ -80,6 +80,8 @@ internal sealed class PushToTalkSession : IDisposable
     /// <summary>Opens the microphone and starts the transcription loop. Throws when the microphone cannot be opened.</summary>
     public void Start()
     {
+        // The model may have been unloaded for inactivity; it loads while the first sentence is being said.
+        App.Transcriber.Preload();
         var option = MicRecorder.Resolve(_settings.Microphone);
         _recorder.Start(option.Number);
         _consumer = Task.Run(ConsumeAsync);
